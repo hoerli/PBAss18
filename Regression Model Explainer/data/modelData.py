@@ -1,4 +1,5 @@
 import os.path
+import pickle
 class ModelData:
     __instance = None
     @staticmethod
@@ -92,4 +93,53 @@ class ModelData:
         if(self.datapath!='' and self.outputvar!='' and self.hiddenLayer.__len__()>0 and self.epoch!=0 and self.batchsize !=0):
             return True
         else:
+            return False
+    def resetData(self):
+        self.datapath=""
+        self.outputvar=""
+        self.hiddenLayer=[]
+        self.epoch=0
+        self.batchsize=0
+        self.model=None
+    def getDataForSave(self):
+        temp=[]
+        temp.append(self.datapath)
+        temp.append(self.outputvar)
+        temp.append(self.hiddenLayer)
+        temp.append(self.epoch)
+        temp.append(self.batchsize)
+        temp.append(self.model)
+        return temp
+    def saveModel(self,path):
+        if(self.isDataSetForTrain() and self.model!=None):
+            file=path+'.model'
+            data=self.getDataForSave()
+            try:
+                output = open(file, 'wb')
+                pickle.dump(data, output)
+                output.close()
+                return True
+            except:
+                return False
+        else:
+            return False
+    def loadModel(self,path):
+        self.resetData()
+        try:
+            inp = open(path,'rb')
+            data = pickle.load(inp)
+            inp.close()
+            t1=self.setDataPath(data[0])
+            t2=self.setOutputvar(data[1])
+            t3=self.setHiddenLayer(data[2])
+            t4=self.setEpoch(data[3])
+            t5=self.setBatchSize(data[4])
+            t6=self.setModel(data[5])
+            if(t1 and t2 and t3 and t4 and t5 and t6):
+                return True
+            else:
+                self.resetData()
+                return False
+        except:
+            self.resetData()
             return False

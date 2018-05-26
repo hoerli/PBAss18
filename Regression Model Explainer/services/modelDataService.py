@@ -33,3 +33,7 @@ class ModelDataService():
         return self.md.getBatchSize()
     def isDataSetForTrain(self):
         return self.md.isDataSetForTrain()
+    def saveModel(self,path):
+        return self.md.saveModel(path)
+    def loadModel(self,path):
+        return self.md.loadModel(path)

@@ -6,6 +6,8 @@ from tkinter import messagebox
 from gui.createTrainNNGui import CreateTrainNNGui
 from gui.predictTestDataGui import PredictTestDataGui
 from gui.failureTestGui import FailureTestGui
+from gui.savaModelGui import SaveModelGui
+from gui.loadModelGui import LoadModelGui
 
 class MainMenuGui():
     def __init__(self):
@@ -37,15 +39,19 @@ class MainMenuGui():
         panel.pack(side = "bottom", fill = "both", expand = "yes")
         panel.configure(bg='white')
         self.input.append(panel)
-        self.root.mainloop()
+        self.root.mainloop()#deadend Todo change that
     def delete(self):
-        self.enableNNMenu("Create/Train neural network")
+        #self.enableNNMenu("Create/Train neural network")
         for i in range(self.input.__len__()):
             self.input[i].destroy()
     def LoadModel(self):
-        self.errorMessage('Not Implemented', 'Load Model isnt implemented Now')
+        #self.errorMessage('Not Implemented', 'Load Model isnt implemented Now')
+        lm=LoadModelGui(self)
+        lm.setLoadPath()
     def SaveModel(self):
-        self.errorMessage('Not Implemented', 'Save Model isnt implemented Now')
+        #self.errorMessage('Not Implemented', 'Save Model isnt implemented Now')
+        sm=SaveModelGui(self)
+        sm.setSavePath()
     def createNeuralNetwork(self):
         ctn = CreateTrainNNGui(self)
         ctn.loadCsv()
