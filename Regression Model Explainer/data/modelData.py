@@ -12,11 +12,12 @@ class ModelData:
             raise Exception("This class is a singleton!")
         else:
             ModelData.__instance = self
-        self.datapath=""
-        self.outputvar=""
-        self.hiddenLayer=[]
-        self.epoch=0
-        self.batchsize=0
+        self.datapath=None
+        self.outputvar=None
+        self.inputvars=None
+        self.hiddenLayer=None
+        self.epoch=None
+        self.batchsize=None
         self.model=None
     def setModel(self,model):
         if(model!=None):
@@ -77,6 +78,11 @@ class ModelData:
                     return False
             except:
                 return False
+    def setInputVars(self,inputvars):
+        if(inputvars is None):
+            return False
+        self.inputvars=inputvars
+        return True
     def getModel(self):
         return self.model
     def getEpoch(self):
@@ -86,25 +92,43 @@ class ModelData:
     def getOutputvar(self):
         return self.outputvar
     def getHiddenLayer(self):
-        return self.hiddenLayer
+        if(self.hiddenLayer is None):
+            return
+        return list(self.hiddenLayer)
     def getBatchSize(self):
         return self.batchsize
-    def isDataSetForTrain(self):
-        if(self.datapath!='' and self.outputvar!='' and self.hiddenLayer.__len__()>0 and self.epoch!=0 and self.batchsize !=0):
-            return True
-        else:
-            return False
+    def getInputVars(self):
+        if(self.inputvars is None):
+            return None
+        return list(self.inputvars)
     def resetData(self):
-        self.datapath=""
-        self.outputvar=""
-        self.hiddenLayer=[]
-        self.epoch=0
-        self.batchsize=0
+        print('RESETDATA')
+        self.datapath=None
+        self.outputvar=None
+        self.inputvars=None
+        self.hiddenLayer=None
+        self.epoch=None
+        self.batchsize=None
         self.model=None
+    def isDataSetForTrain(self):
+        if(self.datapath is None):
+            return False
+        if(self.outputvar is None):
+            return False
+        if(self.inputvars is None):
+            return False
+        if(self.hiddenLayer is None):
+            return False
+        if(self.epoch is None):
+            return False
+        if(self.batchsize is None):
+            return False
+        return True
     def getDataForSave(self):
         temp=[]
         temp.append(self.datapath)
         temp.append(self.outputvar)
+        temp.append(self.inputvars)
         temp.append(self.hiddenLayer)
         temp.append(self.epoch)
         temp.append(self.batchsize)
@@ -130,12 +154,16 @@ class ModelData:
             data = pickle.load(inp)
             inp.close()
             t1=self.setDataPath(data[0])
+            if(not t1):
+                self.datapath=None
+                t1=True
             t2=self.setOutputvar(data[1])
-            t3=self.setHiddenLayer(data[2])
-            t4=self.setEpoch(data[3])
-            t5=self.setBatchSize(data[4])
-            t6=self.setModel(data[5])
-            if(t1 and t2 and t3 and t4 and t5 and t6):
+            t3=self.setInputVars(data[2])
+            t4=self.setHiddenLayer(data[3])
+            t5=self.setEpoch(data[4])
+            t6=self.setBatchSize(data[5])
+            t7=self.setModel(data[6])
+            if(t1 and t2 and t3 and t4 and t5 and t6 and t7):
                 return True
             else:
                 self.resetData()

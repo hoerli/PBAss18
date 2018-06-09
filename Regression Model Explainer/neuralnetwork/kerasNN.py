@@ -12,6 +12,7 @@ class KerasNN():
         Y=y
         
         
+        
         model = Sequential()
         print('add')
         model.add(Dense(int(hiddenLayer[0]), input_dim=inputDim, kernel_initializer='normal', activation='relu'))
@@ -23,12 +24,7 @@ class KerasNN():
         model.compile(loss='mean_squared_error', optimizer='adam')
         
         model.fit(X,Y, epochs=ep, batch_size=bz)
+        
         return model
     def predict(self,InputData,model):
-        no=[]
-        try:
-            return model.predict(InputData)
-        except:
-            print('Fail predict')
-            return no
-        
+            return model.predict(InputData)   
