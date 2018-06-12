@@ -48,6 +48,22 @@ class PredictSingleDataWindowGui(Frame):
         labelframe.pack(fill='x',padx=20)
         if(data is None):
             predictbutton.config(state='disabled')
+        if(data is not None):
+            self.setDataforTesting()#only for boston data for testeing
+    def setDataforTesting(self):
+        self.entrys[0].insert(0,0.08829)
+        self.entrys[1].insert(0,12.5)
+        self.entrys[2].insert(0,7.87)
+        self.entrys[3].insert(0,0)
+        self.entrys[4].insert(0,0.524)
+        self.entrys[5].insert(0,6.012)
+        self.entrys[6].insert(0,66.6)
+        self.entrys[7].insert(0,5.5605)
+        self.entrys[8].insert(0,5)
+        self.entrys[9].insert(0,311)
+        self.entrys[10].insert(0,15.2)
+        self.entrys[11].insert(0,395.6)
+        self.entrys[12].insert(0,12.43)
     def createImputTable(self,scrollable_body,data):
         frame=Frame(scrollable_body)
         frame.pack(fill='x')

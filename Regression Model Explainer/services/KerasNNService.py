@@ -146,3 +146,5 @@ class KerasNNService():
         temp.append(prediction)
         temp.append(data[4])
         return temp
+    def getDataForOverallExplanation(self,file):
+        return self.getAllPredictionData(file)

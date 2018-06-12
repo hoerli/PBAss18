@@ -11,6 +11,8 @@ from gui.predictDataSetWindowGui import PredictDataSetWindowGUI
 from gui.predictSingleDataWindowGui import PredictSingleDataWindowGui
 from services.modelDataService import ModelDataService
 from gui.failureTestWindowGui import FailureTestWindowGui
+from gui.overallExplanationWindowGui import OverallExplanationWindowGui
+from gui.limeWindowGui import LimeWindowGui
 
 class AppGui(Tk):
     def __init__(self):
@@ -57,8 +59,8 @@ class AppGui(Tk):
         self.expm= Menu(self.menu)
         self.menu.add_cascade(label='Explanation', menu=self.expm)
         self.expm.add_command(label="Failure Test",command=lambda: self.switch_frame(FailureTestWindowGui))
-        self.expm.add_command(label='Single instance Explanation(Lime)',command=exit)
-        self.expm.add_command(label='Overall explanation',command=exit)
+        self.expm.add_command(label='Single instance Explanation(Lime)',command=lambda: self.switch_frame(LimeWindowGui))
+        self.expm.add_command(label='Overall explanation',command=lambda: self.switch_frame(OverallExplanationWindowGui))
         self.expm.add_command(label='Explanation Feature', command=exit)
         self.expm.add_command(label='Localy Explanation',command=exit)
         
