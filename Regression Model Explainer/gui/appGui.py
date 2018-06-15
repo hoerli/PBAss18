@@ -17,6 +17,7 @@ from gui.limeWindowGui import LimeWindowGui
 class AppGui(Tk):
     def __init__(self):
         Tk.__init__(self)
+        self.topologytest=False
         self.title("Regression Model Explainer")
         width = self.winfo_screenwidth()
         height = self.winfo_screenheight()
@@ -66,7 +67,7 @@ class AppGui(Tk):
         
         self.nntest = Menu(self.menu)
         self.menu.add_cascade(label='Neural Network Tests', menu=self.nntest)
-        self.nntest.add_command(label='Estimate with missing values', command=exit)
+        self.nntest.add_command(label='Evaluate Neural Network with KerasRegressor(10-fold cross validation)', command=self.topologyTest)
         self.nntest.add_command(label='Neural Network Performance test', command=exit)
     def disabelMenu(self):
         self.menu.entryconfigure('Main', state='disabled')
@@ -93,4 +94,7 @@ class AppGui(Tk):
         if(isloaded):
             messagebox.showinfo('Loaded', 'The Model: '+file+', is loaded')
         else:
-            messagebox.showerror('Not Loaded', 'The model is not Loaded')   
+            messagebox.showerror('Not Loaded', 'The model is not Loaded')
+    def topologyTest(self):
+        self.topologytest=True
+        self.switch_frame(NnWindowGui)

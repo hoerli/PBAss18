@@ -30,6 +30,7 @@ class KerasNNService():
         try:
             model=self.knn.createModel(x, y, inputdim, hiddenLayer, epoch, batchsize)
         except:
+            mds.resetData()
             return False
         return mds.setModel(model)
     def predictFileforGui(self,file):#Todo make it mor generic -> getallPredictionData

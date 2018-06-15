@@ -66,7 +66,8 @@ class NnWindowGui(Frame):
         enter=Button(labelframe,text='Create Neural Network and Train Data',command=self.creatTrainNn)
         enter.pack()
         labelframe.pack(fill='x',padx=20)
-        
+        if(master.topologytest):
+            enter.config(text='Evaluate Neural Network')
     def createFrameRow(self,labelframe,text,readonly):
         frame=Frame(labelframe)
         label = Label(frame,width=20, text=text, anchor='e')
