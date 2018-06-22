@@ -6,16 +6,19 @@ from tkinter import Entry
 from tkinter import messagebox
 from tkinter import END
 from tkinter.ttk import Combobox
+from tkinter.ttk import Treeview
+from tkinter.ttk import Scrollbar
 from tkinter.filedialog import askopenfilename
 
 from gui.mainWindowGui import MainWindowGui
 from services.modelDataService import ModelDataService
+from services.explanationService import ExplanationService
+from gui.scrolledFrameXandY import ScrolledFrameXandY
 class ExplanationFeatureWindowGui(Frame):
     def __init__(self,master):
         Frame.__init__(self, master)
         mds=ModelDataService()
         features=mds.getInputVars()
-        print(features)
         self.master=master
         if(features is not None):
             labelframe=LabelFrame(self,text='Load test Data')
@@ -77,7 +80,33 @@ class ExplanationFeatureWindowGui(Frame):
         file=self.fileentry.get()
         feature=self.featurecombo.get()
         steps=self.stepsentry.get()
-        print(file)
-        print(feature)
-        print(steps)
-    
+        result=ExplanationService.featureExplanation(file, feature, steps)
+        if(result is None):
+            messagebox.showerror('Failed', 'Steps must be a positive number (<=number of tuples in test data) and test data must fit to the model and feature must be choosen')
+        else:
+            self.createTree(result)
+    def createTree(self,result):
+        self.efframe.destroy()
+        self.efframe=Frame(self.eflabelframe)
+        self.efframe.pack(fill='both',expand='yes')
+        vsb=Scrollbar(self.efframe,orient="vertical")
+        vsb.pack(fill='y',side='right')
+        body = Frame(self.efframe)
+        body.pack(fill='both',expand='yes')
+        scrollable_body = ScrolledFrameXandY(body)
+        tree = Treeview(scrollable_body, selectmode='browse')
+        tree.pack(expand=True,fill='both')
+        vsb.config(command=tree.yview)
+        col=[]
+        for i in range(result[0].__len__()):
+            col.append(str(i+1))
+        tree["columns"] = col
+        tree['show'] = 'headings'
+            
+        for i in range(col.__len__()):
+            tree.column(col[i],width=250,anchor='c')
+        for i in range(col.__len__()):
+            tree.heading(col[i],text=result[0][i])
+        for i in range(result[1].__len__()):
+            tree.insert("",'end',text="",values=result[1][i])
+        scrollable_body.update()

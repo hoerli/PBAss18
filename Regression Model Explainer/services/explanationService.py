@@ -1,6 +1,7 @@
 from explanation.failureTest import FailureTest
 from explanation.overallExplanation import overallExplanation
 from explanation.singleinstancelime import SingleInstanceLime
+from explanation.featureExplanation import FeatureExplanation
 class ExplanationService(object):
     @staticmethod
     def failureTest(file):
@@ -14,3 +15,7 @@ class ExplanationService(object):
     def limeExplanation(inp):
         le=SingleInstanceLime(inp)
         return le.getFigure()
+    @staticmethod
+    def featureExplanation(file,feature,steps):
+        fe=FeatureExplanation(file,feature,steps)
+        return fe.getFeatureExplanationData()

@@ -82,7 +82,7 @@ class PredictDataSetWindowGUI(Frame):
         tree['show'] = 'headings'
             
         for i in range(col.__len__()):
-            tree.column(col[i],width=100,anchor='c')
+            tree.column(col[i],anchor='c')
         for i in range(col.__len__()):
             tree.heading(col[i],text=data[0][i])
         for i in range(data[1].__len__()):
