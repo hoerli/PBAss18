@@ -68,6 +68,8 @@ class NnWindowGui(Frame):
         labelframe.pack(fill='x',padx=20)
         if(master.topologytest):
             enter.config(text='Evaluate Neural Network')
+        if(master.perfomancetest):
+            enter.config(text='Start Perfomance Test')
     def createFrameRow(self,labelframe,text,readonly):
         frame=Frame(labelframe)
         label = Label(frame,width=20, text=text, anchor='e')

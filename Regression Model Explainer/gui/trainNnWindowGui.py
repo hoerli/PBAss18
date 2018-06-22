@@ -12,6 +12,8 @@ from tkinter import Entry
 from tkinter import LabelFrame
 from tkinter import messagebox
 
+import matplotlib.pyplot as plt
+
 from services.modelDataService import ModelDataService
 from services.KerasNNService import KerasNNService
 from services.nnTestService import NnTestService
@@ -19,6 +21,9 @@ from services.nnTestService import NnTestService
 class TrainNnWindowGui(Frame):
     def __init__(self,master):
         Frame.__init__(self, master)
+        self.performencetestresultbutton=None
+        self.perftesthistory=None
+        
         self.master=master
         self.master.disabelMenu()
         
@@ -28,6 +33,8 @@ class TrainNnWindowGui(Frame):
         labelframe=LabelFrame(self,text='Training information')
         if(master.topologytest):
             labelframe.config(text='Evaluate Test Information')
+        if(master.perfomancetest):
+            labelframe.config(text='Performance Test Information')
         for i in range(dataandlabel[0].__len__()):
             self.createFrameRow(labelframe,dataandlabel[0][i], dataandlabel[1][i])
         labelframe.pack(fill='x',padx=20)
@@ -37,6 +44,8 @@ class TrainNnWindowGui(Frame):
         self.labelframe=LabelFrame(self,text='Train Neural Network')
         if(master.topologytest):
             self.labelframe.config(text='Evaluate Neural Network')
+        if(master.perfomancetest):
+            self.labelframe.config(text='Performance Test')
         self.timerlabel=Label(self.labelframe,text='Timer')
         self.loadlab=Label(self.labelframe)
         self.timerlabel.pack()
@@ -72,6 +81,13 @@ class TrainNnWindowGui(Frame):
         label.pack(side='left')
     def quitButton(self):
         print('quit')
+    def showPerformanceTestResult(self):#Todo: show plot in gui
+        if(self.perftesthistory is not None):
+            fig7, a = plt.subplots()
+            a.plot(self.perftesthistory.history['loss'])
+            plt.show()
+        else:
+            messagebox.showinfo('Show Result failed', 'Cant show Result of Performance Test')
 class LoadingThread(threading.Thread):
     def __init__(self,master):
         threading.Thread.__init__(self)
@@ -79,6 +95,7 @@ class LoadingThread(threading.Thread):
         self.threadrun=True
         self.image=self.loadImages()
         self.topologyresult=None
+        self.performanceresult=None
     def run(self):
         trainthread=TrainThread(self)
         trainthread.daemon=True
@@ -91,6 +108,8 @@ class LoadingThread(threading.Thread):
                 sleep(0.1)
         if(self.topologyresult is not None):
             self.setTopologyResult()
+        if(self.performanceresult is not None):
+            self.setPerfomanceResult()
         self.master.master.enableMenu()
     def loadImages(self):
         images=[]
@@ -105,7 +124,13 @@ class LoadingThread(threading.Thread):
         self.master.createFrameRow(self.master.labelframe,'MSE(mean): ',abs(self.topologyresult.mean()))
         self.master.createFrameRow(self.master.labelframe,'MSE(std): ',abs(self.topologyresult.std()))
         self.master.createFrameRow(self.master.labelframe,'MSE(mean square root): ',math.sqrt(abs(self.topologyresult.mean())))
-        #Todo show result
+    def setPerfomanceResult(self):
+        self.master.perftesthistory=self.performanceresult
+        self.master.timerlabel.destroy()
+        self.master.loadlab.destroy()
+        self.master.labelframe.config(text='Perfomance Test Result')
+        self.master.performencetestresultbutton=Button(self.master.labelframe,text='Show Result',command=self.master.showPerformanceTestResult)
+        self.master.performencetestresultbutton.pack()
 class TrainThread(threading.Thread):
     def __init__(self,master):
         threading.Thread.__init__(self)
@@ -121,6 +146,16 @@ class TrainThread(threading.Thread):
                 messagebox.showinfo('Evaluation failed', 'Evaluation Test failed')
             self.master.master.master.topologytest=False
             print('Topology Test finished')
+            self.master.threadrun=False
+        elif(self.master.master.master.perfomancetest):
+            print('perfomance test')
+            result=NnTestService.performanceTest()
+            if(result is not None):
+                self.master.performanceresult=result
+                messagebox.showinfo('Finished', 'Performance Test finished')
+            else:
+                messagebox.showinfo('Failed', 'Performance Test Failed')
+            self.master.master.master.perfomancetest=False
             self.master.threadrun=False
         else:
             print('train neural network')

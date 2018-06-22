@@ -13,11 +13,13 @@ from services.modelDataService import ModelDataService
 from gui.failureTestWindowGui import FailureTestWindowGui
 from gui.overallExplanationWindowGui import OverallExplanationWindowGui
 from gui.limeWindowGui import LimeWindowGui
+from gui.explantionFeatureWindowGui import ExplanationFeatureWindowGui
 
 class AppGui(Tk):
     def __init__(self):
         Tk.__init__(self)
         self.topologytest=False
+        self.perfomancetest=False
         self.title("Regression Model Explainer")
         width = self.winfo_screenwidth()
         height = self.winfo_screenheight()
@@ -62,13 +64,12 @@ class AppGui(Tk):
         self.expm.add_command(label="Failure Test",command=lambda: self.switch_frame(FailureTestWindowGui))
         self.expm.add_command(label='Single instance Explanation(Lime)',command=lambda: self.switch_frame(LimeWindowGui))
         self.expm.add_command(label='Overall explanation',command=lambda: self.switch_frame(OverallExplanationWindowGui))
-        self.expm.add_command(label='Explanation Feature', command=exit)
-        self.expm.add_command(label='Localy Explanation',command=exit)
+        self.expm.add_command(label='Explanation Feature', command=lambda: self.switch_frame(ExplanationFeatureWindowGui))
         
         self.nntest = Menu(self.menu)
         self.menu.add_cascade(label='Neural Network Tests', menu=self.nntest)
         self.nntest.add_command(label='Evaluate Neural Network with KerasRegressor(10-fold cross validation)', command=self.topologyTest)
-        self.nntest.add_command(label='Neural Network Performance test', command=exit)
+        self.nntest.add_command(label='Neural Network Performance test', command=self.perfomanceTest)
     def disabelMenu(self):
         self.menu.entryconfigure('Main', state='disabled')
         self.menu.entryconfig('Neural Network', state='disabled')
@@ -97,4 +98,7 @@ class AppGui(Tk):
             messagebox.showerror('Not Loaded', 'The model is not Loaded')
     def topologyTest(self):
         self.topologytest=True
+        self.switch_frame(NnWindowGui)
+    def perfomanceTest(self):
+        self.perfomancetest=True
         self.switch_frame(NnWindowGui)
