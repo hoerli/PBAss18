@@ -17,6 +17,8 @@ from gui.mainWindowGui import MainWindowGui
 from services.explanationService import ExplanationService
 from tools.helper import Helper
 class OverallExplanationWindowGui(Frame):
+    ''' Frame for Overall Explanation
+    '''
     def __init__(self,master):
         Frame.__init__(self, master)
         

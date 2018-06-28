@@ -1,14 +1,19 @@
 import numpy as np
 from mylime import lime_tabular
-import matplotlib.pyplot as plt
 from services.modelDataService import ModelDataService
 from services.loadCsvService import LoadCsvService
 from tools.helper import Helper
 class SingleInstanceLime():
+    ''' For Test of single instance for lime
+    need the input of one tuple who fits to the model
+    needs an existing file path of the train data who is saved with the model
+    '''
     def __init__(self,inp):
         self.mds=ModelDataService()
         self.inp=inp
     def getFigure(self):
+        ''' method to get matlibplot figure from this test
+        '''
         model=self.mds.getModel()
         traindatapath=self.mds.getDataPath()
         if(traindatapath is None):
@@ -55,5 +60,3 @@ class SingleInstanceLime():
         finaldata.append(features)
         finaldata.append(inpu)
         return finaldata
-        #a=f.add_subplot(111)
-        #plt.show()

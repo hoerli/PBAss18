@@ -19,6 +19,13 @@ from services.KerasNNService import KerasNNService
 from services.nnTestService import NnTestService
 
 class TrainNnWindowGui(Frame):
+    ''' Frame for training, MSE test and perfomance test
+    Shows information and a loading sequence
+    with perfomance test shows a button to a plot of the result of this test
+    with mse test shows the MSE,RMSE at the end of the test
+    shows (messagebox) information when training is finished
+    run in Threats (disable menu while running)
+    '''
     def __init__(self,master):
         Frame.__init__(self, master)
         self.performencetestresultbutton=None

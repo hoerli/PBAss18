@@ -1,11 +1,15 @@
-import numpy as np
 from services.KerasNNService import KerasNNService
 from tools.helper import Helper
 class overallExplanation(object):
+    ''' Overall Explanation
+    needs a the filepath of test data who fits to the model
+    '''
     def __init__(self,file):
         self.knns=KerasNNService()
         self.file=file
     def getTestData(self):
+        ''' method who return the data for overall explanation
+        '''
         data=self.knns.getDataForOverallExplanation(self.file)
         if(data is None):
             return
@@ -44,13 +48,8 @@ class overallExplanation(object):
         bothdiff=Helper.getPosAndNegDiffList(differencedata)
         if(bothdiff is None):
             return
-        print(differencedata)
-        print(positivediff)
-        print(negativediff)
-        print(bothdiff)
         finaldata.append(positivediff)
         finaldata.append(negativediff)
         finaldata.append(bothdiff)
         finaldata.append(outputfeature)
-        
         return finaldata

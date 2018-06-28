@@ -16,6 +16,10 @@ from gui.limeWindowGui import LimeWindowGui
 from gui.explantionFeatureWindowGui import ExplanationFeatureWindowGui
 
 class AppGui(Tk):
+    ''' Gui for the application
+    creates a menu
+    using tkinter lib
+    '''
     def __init__(self):
         Tk.__init__(self)
         self.topologytest=False
@@ -36,12 +40,16 @@ class AppGui(Tk):
         self._frame = None
         self.switch_frame(MainWindowGui)
     def switch_frame(self, frame_class):
+        ''' method to switch frames
+        '''
         new_frame = frame_class(self)
         if self._frame is not None:
             self._frame.destroy()
         self._frame = new_frame
         self._frame.pack(fill ='both',expand='yes')
     def createMenu(self):
+        ''' method to create the menu
+        '''
         self.menu = Menu(self)
         self.config(menu=self.menu)
         
@@ -81,6 +89,8 @@ class AppGui(Tk):
         self.menu.entryconfigure('Explanation', state='normal')
         self.menu.entryconfigure('Neural Network Tests', state='normal')
     def modelSave(self):
+        ''' method to save a model and its data
+        '''
         file = asksaveasfilename(filetypes=[("Model Files",".model")])
         mds=ModelDataService()
         issaved=mds.saveModel(file)
@@ -89,6 +99,8 @@ class AppGui(Tk):
         else:
             messagebox.showerror('Not Saved', 'There is no model created or loaded to Save')
     def loadModel(self):
+        ''' method to load a model and its data
+        '''
         file=askopenfilename(filetypes=[("Model Files",".model")])
         mds=ModelDataService()
         isloaded=mds.loadModel(file)

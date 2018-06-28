@@ -2,7 +2,11 @@ from tkinter import Frame
 from tkinter import Scrollbar
 from tkinter import Canvas
 from tkinter import NW
+
 class ScrolledFrameXandY(Frame):
+    ''' To add a horizontal scrollbar to a frame
+    for expnaded frame
+    '''
     def __init__(self, frame):
         scrollbar = Scrollbar(frame,orient='horizontal')
         scrollbar.pack( fill='x', expand=False)

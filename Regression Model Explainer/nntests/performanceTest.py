@@ -2,9 +2,16 @@ from services.modelDataService import ModelDataService
 from neuralnetwork.nnPerfomanceTest import NnPerfomanceTest
 from services.loadCsvService import LoadCsvService
 class PerformanceTest(object):
+    ''' Perfomance test
+    '''
     def __init__(self):
         self.nnpt=NnPerfomanceTest()
     def startTest(self):
+        ''' method to run this test
+        get the data for this test from the ModelData Singleton
+        make the test with NnPerfomanceTest
+        returns the history of this test
+        '''
         mds=ModelDataService()
         if(not mds.isDataSetForTrain()):
             mds.resetData()

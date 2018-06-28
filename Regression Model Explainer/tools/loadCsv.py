@@ -2,21 +2,34 @@ import csv
 import numpy as np
 from tools.helper import Helper
 class loadCSV:
+    ''' to load and get data from a csv file
+    needs a filepath
+    test if csv is compatible
+    '''
     def __init__(self, file):
         self.datalist=self.readCsv(file)
     def getTagList(self):
+        ''' method returns features of csv file
+        '''
         if(self.datalist is None):
             return
         return self.datalist[0]
     def getnumberOfData(self):
+        ''' method returns number of ata tuples except the feature
+        '''
         if(self.datalist is None):
             return
         return (self.datalist.__len__()-1)
     def getNumberOfInput(self):
+        ''' method returns number of input (input lenght minus 1 output)
+        '''
         if(self.datalist is None):
             return
         return (self.datalist[0].__len__()-1)
     def getOutputIndex(self,feature):
+        ''' method returns index of the output feature
+        needs the output feature
+        '''
         if(self.datalist is None):
             return
         temp=self.datalist[0]
@@ -25,6 +38,10 @@ class loadCSV:
                 return i
         return
     def readCsv(self,file):
+        ''' called in constructor
+        reads csv
+        test csv
+        '''
         trainData= []
         try:
             with open(file) as f:
@@ -56,6 +73,9 @@ class loadCSV:
                 return
         return trainData
     def getOutputArray(self,feature):
+        ''' method returns the output array
+        needs the output feature
+        '''
         if(self.datalist is None):
             return
         outputarray=[]
@@ -70,6 +90,9 @@ class loadCSV:
             return outputarray
         return
     def getInputArray(self,feature):
+        ''' method returns the input array
+        needs the output feature
+        '''
         if(self.datalist is None):
             return
         inputarray=[]

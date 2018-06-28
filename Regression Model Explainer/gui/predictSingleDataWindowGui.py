@@ -11,6 +11,8 @@ from gui.mainWindowGui import MainWindowGui
 from gui.scrolledFrame import Scrollable
 from services.KerasNNService import KerasNNService
 class PredictSingleDataWindowGui(Frame):
+    ''' Frame for prediction with a single tuple
+    '''
     def __init__(self,master):
         Frame.__init__(self, master)
         

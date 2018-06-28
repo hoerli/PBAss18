@@ -2,6 +2,9 @@ from data.modelData import ModelData
 from services.loadCsvService import LoadCsvService
 from tools.helper import Helper
 class ModelDataService():
+    ''' Service to get and set data for the model (inkl model)
+    creates a singelton if no singleton object is created or load the singlton object from ModelData
+    '''
     def __init__(self):
         self.md=ModelData.getInstance()
     def setModel(self,model):
@@ -41,6 +44,8 @@ class ModelDataService():
     def getInputVars(self):
         return self.md.getInputVars()
     def printAll(self):
+        '''method to print data who save in the ModelData object
+        '''
         print('Datapath')
         print(self.md.datapath)
         print('Outputvar')
@@ -54,6 +59,9 @@ class ModelDataService():
         print('Model')
         print(self.md.model)
     def setDataFromGui(self,file,outputvar,hiddenlayer,epoch,batchsize):
+        ''' set all the data except the model itself in the ModelData singleton
+        interface between client(gui) and backend
+        '''
         self.resetData()
         isok=self.setDataPath(file)
         if(not isok):
@@ -83,6 +91,11 @@ class ModelDataService():
             return False
         return True
     def getDataForGui(self):
+        ''' method to get data of the ModelData singelton for gui
+        adds names for this data
+        returns list with this data for gui
+        interface between client(gui) and backend
+        '''
         lcsv=LoadCsvService(self.getDataPath())
         data=[]
         label=[]
@@ -109,6 +122,8 @@ class ModelDataService():
         dataandlabel.append(data)
         return dataandlabel
     def getModelInformationForGui(self):
+        ''' interface between client(gui) and backend
+        '''
         dataandlabel=self.getDataForGui()
         label='Model'
         model=self.getModel()
@@ -119,6 +134,11 @@ class ModelDataService():
         dataandlabel[1].append(model)
         return dataandlabel
     def getPredictDataForGui(self):
+        ''' method to get data for predictions
+        input and output feature names
+        add string to output
+        interface between client(gui) and backend
+        '''
         data=[]
         inputvars=self.getInputVars()
         outputvars=self.getOutputvar()

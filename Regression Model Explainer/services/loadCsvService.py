@@ -1,5 +1,9 @@
 from tools.loadCsv import loadCSV
 class LoadCsvService():
+    ''' Service to call the algorithms to get data from a csv file
+    needs a filepath to a csv
+    have different methods to get different data wich a neede in the application (look method names)
+    '''
     def __init__(self,path):
         self.path=path
         self.loadcsv=loadCSV(self.path)

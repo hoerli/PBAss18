@@ -15,6 +15,11 @@ from gui.trainNnWindowGui import TrainNnWindowGui
 from tools.helper import Helper
 from services.modelDataService import ModelDataService
 class NnWindowGui(Frame):
+    ''' Frame for the input of model data
+    used by model creation
+    used by MSE test
+    used by perfomance test
+    '''
     def __init__(self,master):
         Frame.__init__(self, master)
         self.m=master

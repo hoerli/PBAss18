@@ -8,6 +8,8 @@ from tkinter import messagebox
 from services.modelDataService import ModelDataService
 from gui.mainWindowGui import MainWindowGui
 class ShowModelInformationGui(Frame):
+    ''' Frame to show model informations
+    '''
     def __init__(self,master):
         Frame.__init__(self, master)
         

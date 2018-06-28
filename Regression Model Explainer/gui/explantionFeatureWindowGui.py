@@ -15,6 +15,8 @@ from services.modelDataService import ModelDataService
 from services.explanationService import ExplanationService
 from gui.scrolledFrameXandY import ScrolledFrameXandY
 class ExplanationFeatureWindowGui(Frame):
+    ''' Frame for Explanation Feature
+    '''
     def __init__(self,master):
         Frame.__init__(self, master)
         mds=ModelDataService()

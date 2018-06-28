@@ -1,6 +1,8 @@
 import os.path
 import pickle
 class ModelData:
+    ''' Singelton to save model and data for the model during runtime
+    '''
     __instance = None
     @staticmethod
     def getInstance():
@@ -135,6 +137,8 @@ class ModelData:
         temp.append(self.model)
         return temp
     def saveModel(self,path):
+        ''' To save the model and its data
+        '''
         if(self.isDataSetForTrain() and self.model!=None):
             file=path+'.model'
             data=self.getDataForSave()
@@ -148,6 +152,8 @@ class ModelData:
         else:
             return False
     def loadModel(self,path):
+        ''' To load model and its data
+        '''
         self.resetData()
         try:
             inp = open(path,'rb')

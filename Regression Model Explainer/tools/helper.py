@@ -1,7 +1,13 @@
 import numpy as np
 class Helper(object):
+    ''' this class has different helper methods for the application
+    methods are all static methods (no object needed)
+    '''
     @staticmethod
     def is_number(s):
+        ''' returns true or false
+        test if the s is a number
+        '''
         try:
             float(s) # for int, long, float
         except ValueError:
@@ -9,6 +15,9 @@ class Helper(object):
         return True
     @staticmethod
     def is_integer(s):
+        ''' returns true or false
+        test if the s is positiv Integer number
+        '''
         try:
             int(s) # for int
             if(int(s)<=0):# for positive
@@ -18,6 +27,8 @@ class Helper(object):
         return True
     @staticmethod
     def getInputFeatureList(inputfeaturelist,outputfeatur):
+        ''' returns a list of features except the outputfeatur
+        '''
         templist=[]
         if(inputfeaturelist is None):
             return
@@ -33,6 +44,9 @@ class Helper(object):
         return templist
     @staticmethod
     def compareFeatureLists(list_model,list_testdata):
+        ''' returns true or false
+        test if the model input features are the same (also same sequence) as the test data features
+        '''
         if(list_model.__len__() != list_testdata.__len__()):
             return False
         for i in range(list_model.__len__()):
@@ -41,6 +55,9 @@ class Helper(object):
         return True
     @staticmethod
     def getDiffList(messuredlist,predictlist):
+        ''' returns a list with differences between two list of data (numbers)
+        first must be messured data second predict data
+        '''
         if(messuredlist.__len__() != predictlist.__len__()):
             return
         resultlist=[]
@@ -54,6 +71,8 @@ class Helper(object):
         return resultlist
     @staticmethod
     def transformPredictiontoArray(prediction):
+        ''' returns 2 dim array of prediction to 1 dim array (keras predictions always returns a two dimensional array)
+        '''
         if(prediction is None):
             return
         predictionarr=[]
@@ -63,6 +82,8 @@ class Helper(object):
         return predictionarr
     @staticmethod
     def getPositiveDifference(difflist):
+        ''' returns array of all positive numbers of this list
+        '''
         if(difflist is None):
             return
         try:
@@ -78,6 +99,8 @@ class Helper(object):
         return posdifflist
     @staticmethod
     def getNegativeDifference(difflist):
+        ''' returns array of all negative numbers of this list (change to positiv)
+        '''
         if(difflist is None):
             return
         try:
@@ -93,6 +116,8 @@ class Helper(object):
         return negdifflist
     @staticmethod
     def getPosAndNegDiffList(difflist):
+        ''' returns array of all numbers of this this list (change negativ numbers to positiv)
+        '''
         if(difflist is None):
             return
         try:
@@ -104,6 +129,8 @@ class Helper(object):
         return resultlist
     @staticmethod
     def getMeans(positiv,negativ,full):
+        ''' return the menas of 3 list of numbers
+        '''
         if(positiv is None):
             return
         if(negativ is None):
@@ -127,6 +154,8 @@ class Helper(object):
         return means
     @staticmethod
     def getFeaturIndex(featurlist,feature):
+        ''' returns the index of a feature from a feature list
+        '''
         if(featurlist is None):
             return
         if(feature == ''):
@@ -137,6 +166,9 @@ class Helper(object):
         return
     @staticmethod
     def getFeatureArray(inputdata,featureindex):
+        ''' returns an array of of the data where the featureindex is is
+        needs array of inputdata
+        '''
         if(inputdata is None):
             return
         if(featureindex is None):
@@ -149,6 +181,13 @@ class Helper(object):
         return featurearray
     @staticmethod
     def getFeatureExplanationData(featurearray,messureddata,predictdata,steps):
+        ''' returns result for feature explanation test
+        needs array of features who gets explained
+        needs the messured data (array)
+        needs the predictdata (array)
+        needs steps in wich the feature gets splited
+        used by FeatureExplanation
+        '''
         if(featurearray.__len__()!=messureddata.__len__()!=predictdata.__len__()):
             return
         

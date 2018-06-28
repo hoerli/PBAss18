@@ -3,12 +3,19 @@ from services.loadCsvService import LoadCsvService
 from services.modelDataService import ModelDataService
 from tools.helper import Helper
 class FeatureExplanation(object):
+    ''' Feature Explanation
+    needs test data who fits to the model
+    a feature who gets explained
+    and the steps in which the feature gets splitted
+    '''
     def __init__(self,file,feature,steps):
         self.knn=KerasNN()
         self.file=file
         self.feature=feature
         self.steps=steps
     def getFeatureExplanationData(self):
+        '''method who returns the data for the feature test
+        '''
         lcsv=LoadCsvService(self.file)
         mds=ModelDataService()
         model=mds.getModel()
@@ -54,11 +61,6 @@ class FeatureExplanation(object):
         featurearray=Helper.getFeatureArray(inputdata, featureindex)
         if(featurearray is None):
             return
-        '''
-        print(messureddata)
-        print(predictdata)
-        print(featurearray)
-        '''
         featurexplanationdata=Helper.getFeatureExplanationData(featurearray, messureddata, predictdata,self.steps)
         if(featurexplanationdata is None):
             return

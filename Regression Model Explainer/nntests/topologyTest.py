@@ -2,9 +2,16 @@ from services.loadCsvService import LoadCsvService
 from services.modelDataService import ModelDataService
 from neuralnetwork.nnTopologyTest import NnTopologyTest
 class TopologyTest(object):
+    ''' Test to get MSE over 10 times training
+    '''
     def __init__(self):
         self.nntt=NnTopologyTest()
     def startTest(self):
+        ''' method to run this test
+        get the data for this test from the ModelData Singleton
+        make the test with NnTopologyTest
+        returns MSEs
+        '''
         mds=ModelDataService()
         if(not mds.isDataSetForTrain()):
             mds.resetData()

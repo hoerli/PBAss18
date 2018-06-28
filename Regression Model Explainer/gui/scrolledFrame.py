@@ -4,6 +4,8 @@ from tkinter import Canvas
 from tkinter import NW
 
 class Scrollable(Frame):
+    ''' To add a horizontal scrollbar to a frame
+    '''
     def __init__(self, frame):
         scrollbar = Scrollbar(frame,orient='horizontal')
         scrollbar.pack( fill='x', expand=False)

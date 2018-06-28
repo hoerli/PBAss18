@@ -13,6 +13,8 @@ from tkinter.filedialog import askopenfilename
 from services.KerasNNService import KerasNNService
 from gui.scrolledFrameXandY import ScrolledFrameXandY
 class PredictDataSetWindowGUI(Frame):
+    ''' Frame for prediction with a data set
+    '''
     def __init__(self,master):
         Frame.__init__(self, master)
         

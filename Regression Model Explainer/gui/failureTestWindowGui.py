@@ -12,6 +12,8 @@ from tkinter.filedialog import askopenfilename
 from gui.mainWindowGui import MainWindowGui
 from services.explanationService import ExplanationService
 class FailureTestWindowGui(Frame):
+    ''' Frame for the Failure Test
+    '''
     def __init__(self,master):
         Frame.__init__(self, master)
         self.master=master

@@ -12,6 +12,8 @@ from gui.mainWindowGui import MainWindowGui
 from services.modelDataService import ModelDataService
 from services.explanationService import ExplanationService
 class LimeWindowGui(Frame):
+    '''Frame for the Lime Test
+    '''
     def __init__(self,master):
         Frame.__init__(self, master)
         
