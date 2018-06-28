@@ -1,0 +1,59 @@
+Python 3.6
+go to: https://conda.io/miniconda.html
+download: installer for miniconda for python 3.6 for your OS
+install miniconda
+
+Conda installs
+go to /miniconda3/scripts
+
+install PIL
+conda install pillow
+
+install Keras:
+conda install keras
+
+install Theano:
+conda install theano
+
+intall matplotlib
+conda install matplotlib
+
+pip installations
+go to /miniconda3/scripts
+
+install sklearn
+pip install sklearn
+
+install lime
+pip install lime
+
+Run the programm once go to /Regression Model Explainer
+(download or clone the application)
+../miniconda3/python starter.py
+close the window to change from tensaflow to theano backennd
+
+Change backend to Theano
+open file at:
+../Users/yourusername/.keras/keras.json
+change from
+{
+    "floatx": "float32",
+    "epsilon": 1e-07,
+    "backend": "tensorflow",
+    "image_data_format": "channels_last"
+}
+
+to:
+
+{
+    "floatx": "float32",
+    "epsilon": 1e-07,
+    "backend": "theano",
+    "image_data_format": "channels_last"
+}
+
+Run the app:
+go to /Regression Model Explainer
+(download or clone the application)
+../miniconda3/python starter.py
+or simple run starter.py (if cloned in IDE)
