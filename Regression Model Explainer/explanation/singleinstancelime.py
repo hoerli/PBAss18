@@ -68,4 +68,29 @@ class SingleInstanceLime():
         temp2=Helper.sortFeaturesForLime(features, inpu, temp[0])
         finaldata.append(temp2[0])
         finaldata.append(temp2[1])
+        f=exp.as_pyplot_figure()
+        finaldata.append(f)
         return finaldata
+    def getInputTuples(self,file):
+        lcsv=LoadCsvService(file)
+        mds=ModelDataService()
+        if(mds.getModel() is None):
+            return
+        model_featurelist=mds.getInputVars()
+        if(model_featurelist is None):
+            return
+        traindata_featurelist=lcsv.getTagList()
+        if(traindata_featurelist is None):
+            return
+        outputfeature=mds.getOutputvar()
+        if(outputfeature is None):
+            return
+        traindata_featurelist=Helper.getInputFeatureList(traindata_featurelist,outputfeature)
+        if(traindata_featurelist is None):
+            return
+        if(not Helper.compareFeatureLists(model_featurelist, traindata_featurelist)):
+            return
+        inputdata=lcsv.getInputArray(outputfeature)
+        if(inputdata is None):
+            return
+        return inputdata

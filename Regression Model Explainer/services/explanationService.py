@@ -31,6 +31,10 @@ class ExplanationService(object):
         le=SingleInstanceLime(inp)
         return le.getFigure()
     @staticmethod
+    def getInputTuples(file):
+        le=SingleInstanceLime(None)
+        return le.getInputTuples(file)
+    @staticmethod
     def featureExplanation(file,feature,steps):
         ''' method for the feature explanation test
         needs a file path from test data who fits to the trained model

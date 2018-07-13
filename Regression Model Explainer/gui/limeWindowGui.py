@@ -1,15 +1,15 @@
-import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 from tkinter import Frame
+from tkinter import Label
 from tkinter import LabelFrame
 from tkinter import messagebox
 from tkinter import Button
 from tkinter import Entry
-from tkinter.ttk import Notebook
-from gui.scrolledFrame import Scrollable
-from gui.mainWindowGui import MainWindowGui
-from services.modelDataService import ModelDataService
+from tkinter.filedialog import askopenfilename
+from tkinter import END
+from tkinter.ttk import Combobox
+
 from services.explanationService import ExplanationService
 class LimeWindowGui(Frame):
     '''Frame for the Lime Test
@@ -17,112 +17,65 @@ class LimeWindowGui(Frame):
     def __init__(self,master):
         Frame.__init__(self, master)
         
-        nb=Notebook(self)
-        nb.pack(side='left',fill='both',expand='yes')
-        
-        tab1=Frame()
-        nb.add(tab1,text='Lime')
-        
-        mds=ModelDataService()
-        self.entrys=[]
-        labelframe=LabelFrame(tab1,text='Input Data')
-        labelframe.pack(fill='both',expand='yes',padx=20)
-        body = Frame(labelframe)
-        body.pack(fill='both',expand='yes')
-        
-
-        scrollable_body = Scrollable(body)
-        data=mds.getPredictDataForGui()
-        if(data is not None):
-            self.createImputTable(scrollable_body, data)
-        else:
-            messagebox.showerror('No Moded', 'No Model created or loaded')
-        scrollable_body.update()
-        
-        labelframe=LabelFrame(tab1,text='Options')
-        testbutton=Button(labelframe,text='Test',command=self.testButton)
-        testbutton.pack(side='right')
-        cancelbutton=Button(labelframe,text='Cancel',command=lambda: master.switch_frame(MainWindowGui))
-        cancelbutton.pack(side='right') 
+        labelframe=LabelFrame(self,text='Load test Data')
+        frame=Frame(labelframe)
+        label = Label(frame,width=20, text='Testdata file: ', anchor='e')
+        self.fileentry = Entry(frame,readonlybackground='white')
+        self.fileentry.config(state='readonly')
+        self.brbutton=Button(frame,text='browse',command=self.browseButton)
+        frame.pack(side='top',fill='x')
+        label.pack(side='left')
+        self.fileentry.pack(side='left',fill='x',expand='yes')
+        self.brbutton.pack(side='left')
         labelframe.pack(fill='x',padx=20)
-        if(data is None):
-            testbutton.config(state='disabled')
-        tab2=Frame()
-        nb.add(tab2,text='Lime Daigramm')
-        self.limelabelframe=LabelFrame(tab2,text='Lime Diagramm (weights to result)')
+        
+        frame=Frame(labelframe)
+        label = Label(frame,width=20, text='Choose Feature: ', anchor='e')
+        self.featurecombo = Combobox(frame,state="readonly")
+        self.featurecombo.bind("<<ComboboxSelected>>", self.selectItem)
+        label.pack(side='left')
+        self.featurecombo.pack(side='left',fill='x',expand='yes')
+        frame.pack(side='top',fill='x')
+        
+        self.limelabelframe=LabelFrame(self,text='Explanation of a single tuple with lime')
         self.limeframe=Frame(self.limelabelframe)
         self.limeframe.pack(fill='both',expand='yes')
         self.limelabelframe.pack(fill='both',expand='yes',padx=20)
+    def selectItem(self,event):
+        index=self.featurecombo.current()
+        self.runTest(self.inputtuples[index])
+    def browseButton(self):
+        file=askopenfilename(filetypes=[("CSV Files",".csv")])
+        self.setFilePath(file,0)
+    def setFilePath(self,file,index):
+        self.fileentry.config(state='normal')
+        self.fileentry.delete(0, END)
+        self.fileentry.insert(0, file)
+        self.fileentry.config(state='readonly')
         
-        tab3=Frame()
-        nb.add(tab3,text='Feature Info')
-        self.featurelabelframe=LabelFrame(tab3,text='Feature Info')
-        self.featureframe=Frame(self.featurelabelframe)
-        self.featureframe.pack(fill='both',expand='yes')
-        self.featurelabelframe.pack(fill='both',expand='yes',padx=20)
-        
-        tab4=Frame()
-        nb.add(tab4,text='min,max,pred')
-        self.mmplabelframe=LabelFrame(tab4,text='min,max,pred')
-        self.mmpframe=Frame(self.mmplabelframe)
-        self.mmpframe.pack(fill='both',expand='yes')
-        self.mmplabelframe.pack(fill='both',expand='yes',padx=20)
-        if(data is not None):
-            self.setDataforTesting()#only for boston data for testeing
-    def setDataforTesting(self):
-        self.entrys[0].insert(0,0.08829)
-        self.entrys[1].insert(0,12.5)
-        self.entrys[2].insert(0,7.87)
-        self.entrys[3].insert(0,0)
-        self.entrys[4].insert(0,0.524)
-        self.entrys[5].insert(0,6.012)
-        self.entrys[6].insert(0,66.6)
-        self.entrys[7].insert(0,5.5605)
-        self.entrys[8].insert(0,5)
-        self.entrys[9].insert(0,311)
-        self.entrys[10].insert(0,15.2)
-        self.entrys[11].insert(0,395.6)
-        self.entrys[12].insert(0,12.43)     
-    def createImputTable(self,scrollable_body,data):
-        frame=Frame(scrollable_body)
-        frame.pack(fill='x')
-        for i in range(data[0].__len__()):
-            entry = Entry(frame)
-            entry.pack(side='left')
-            entry.insert(0, str(data[0][i]))
-            entry.config(state='readonly')
-        frame=Frame(scrollable_body)
-        frame.pack(fill='x')
-        for i in range(data[0].__len__()):
-            entry = Entry(frame)
-            entry.pack(side='left')
-            self.entrys.append(entry)
-    def testButton(self):
-        instancedata=[]
-        for i in range(self.entrys.__len__()):
-            instancedata.append(self.entrys[i].get())
+        self.inputtuples=ExplanationService.getInputTuples(file)
+        if(self.inputtuples is None):
+            messagebox.showerror('Error train data/model',
+                                  'Train data doesnt fit to the model or no model created')
+            return
+        comboitems=[]
+        for i in range(self.inputtuples.__len__()):
+            comboitems.append('Tuple: '+str(i+1))
+        self.featurecombo.config(values=comboitems)
+        self.featurecombo.current(index)
+        self.inputtuples=self.inputtuples.astype(float)
+        self.runTest(self.inputtuples[index])
+    def runTest(self,inpu):
+        instancedata=inpu
         result=ExplanationService.limeExplanation(instancedata)
         if(result is None):
             print('Erro Message Box Here')
             return
-        #print('min: '+str(result[1]))
-        #print('max: '+str(result[2]))
-        #print('pred: '+str(result[3]))
         
         self.limeframe.destroy()
         self.limeframe=Frame(self.limelabelframe)
         self.limeframe.pack(fill='both',expand='yes')
-        '''
-        f = Figure(figsize=(1, 1), dpi=100)
-        a=f.add_subplot(111)
-        a.plot(result[0].get_axes())
-        
-        f=result[0]
-        f.add_subplot(111)
-        a2 =f.add_subplot(122)
-        a2.bar(result[4],result[5])
-        '''
-        #print(result[2])
+
         f = Figure(figsize=(1, 1), dpi=100)
         a = f.add_subplot(132)
         ind = 0
@@ -145,7 +98,6 @@ class LimeWindowGui(Frame):
                 zahler=zahler+1
                 a.text(min(values),ind+height*zahler,labels[i],fontsize=8)
                 zahler=zahler+1
-                canvas = FigureCanvasTkAgg(f, master=self.limeframe)
         xlim=a.get_xlim()
         fullx=abs(xlim[0])+xlim[1]
         pos=((100/fullx)*xlim[0])/100
@@ -221,6 +173,10 @@ class LimeWindowGui(Frame):
         a3.xaxis.set_visible(False)
         a3.yaxis.set_visible(False)
         a3.axis('off')
+        
+        f.suptitle('Explanation of a single tuple with lime')
+        
+        canvas = FigureCanvasTkAgg(f, master=self.limeframe)
         canvas.draw()
         canvas.get_tk_widget().pack(side='top', fill='both', expand='yes')
 
@@ -228,7 +184,7 @@ class LimeWindowGui(Frame):
         toolbar.update()
         canvas._tkcanvas.pack(side='top', fill='both', expand='yes')
         '''
-        f2=result[2]
+        f2=result[9]
         f2.add_subplot(111)
         
         self.featureframe.destroy()
