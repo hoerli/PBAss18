@@ -13,60 +13,15 @@ from tkinter.ttk import Scrollbar
 from tkinter.ttk import Treeview
 from tkinter.filedialog import askopenfilename
 from gui.scrolledFrameXandY import ScrolledFrameXandY
-from gui.mainWindowGui import MainWindowGui
 from services.explanationService import ExplanationService
 from tools.helper import Helper
+from gui.limeWindowGui import LimeWindowGui
 class OverallExplanationWindowGui(Frame):
     ''' Frame for Overall Explanation
     '''
     def __init__(self,master):
         Frame.__init__(self, master)
-        '''
-        nb=Notebook(self)
-        nb.pack(side='left',fill='both',expand='yes')
-        
-        tab1=Frame()
-        nb.add(tab1,text='Table')
-        labelframe=LabelFrame(tab1,text='Load Test Data')
-        frame=Frame(labelframe)
-        label = Label(frame, text='Testdata file: ', anchor='e')
-        self.fileentry = Entry(frame,readonlybackground='white')
-        self.fileentry.config(state='readonly')
-        button=Button(frame,text='browse',command=self.browseButton)
-        frame.pack(side='top',fill='x')
-        label.pack(side='left')
-        self.fileentry.pack(side='left',fill='x',expand='yes')
-        button.pack(side='left')
-        labelframe.pack(fill='x',padx=20)
-        
-        self.emptyRow(tab1)
-        
-        self.treelabelframe=LabelFrame(tab1,text='Overall Eplanation')
-        self.treeframe=Frame(self.treelabelframe)
-        self.treeframe.pack(fill='both',expand='yes')
-        self.treelabelframe.pack(fill='both',expand='yes',padx=20)
-        
-        labelframe=LabelFrame(tab1,text='Options')
-        button=Button(labelframe,text='Test',command=self.testButton)
-        button.pack(side='right')
-        button=Button(labelframe,text='Cancel',command=lambda: self.master.switch_frame(MainWindowGui))
-        button.pack(side='right')
-        labelframe.pack(fill='x',padx=20)
-        
-        tab2=Frame()
-        nb.add(tab2,text='Boxplot')
-        self.boxplotlabelframe=LabelFrame(tab2,text='Difference Messured to Predicted')
-        self.boxplotframe=Frame(self.boxplotlabelframe)
-        self.boxplotframe.pack(fill='both',expand='yes')
-        self.boxplotlabelframe.pack(fill='both',expand='yes',padx=20)
-        
-        tab3=Frame()
-        nb.add(tab3,text='Mean')
-        self.meanlabelframe=LabelFrame(tab3,text='Mean of the differences messured to predict')
-        self.meanframe=Frame(self.meanlabelframe)
-        self.meanframe.pack(fill='both',expand='yes')
-        self.meanlabelframe.pack(fill='both',expand='yes',padx=20)
-        '''
+
         labelframe=LabelFrame(self,text='Load Test Data')
         frame=Frame(labelframe)
         label = Label(frame, text='Testdata file: ', anchor='e')
@@ -81,7 +36,7 @@ class OverallExplanationWindowGui(Frame):
         
         frame=Frame(self)
         frame.pack(fill='both',expand='yes')
-        labelframe=LabelFrame(frame,text='Overall Explanation')
+        labelframe=LabelFrame(frame,text='Overall Explanation: Double click on tuple in Table to show explanation of the tuple (lime)')
         labelframe.pack(fill='both',expand='yes',padx=20)
         nb=Notebook(labelframe)
         nb.pack(side='left',fill='both',expand='yes')
@@ -96,12 +51,6 @@ class OverallExplanationWindowGui(Frame):
         self.tableframe=Frame(self.tab2)
         self.tableframe.pack(fill='both',expand='yes')
         
-        labelframe=LabelFrame(self,text='Options')
-        button=Button(labelframe,text='Test',command=self.testButton)
-        button.pack(side='right')
-        button=Button(labelframe,text='Cancel',command=lambda: self.master.switch_frame(MainWindowGui))
-        button.pack(side='right')
-        labelframe.pack(fill='x',padx=20)
     def emptyRow(self,tab):
         frame=Frame(tab,padx=20)
         label = Label(frame,width=20, text='', anchor='e')
@@ -109,24 +58,32 @@ class OverallExplanationWindowGui(Frame):
         label.pack(side='left')
     def browseButton(self):
         file=askopenfilename(filetypes=[("CSV Files",".csv")])
+        self.setFileEntry(file)
+    def setFileEntry(self,file):
         self.fileentry.config(state='normal')
         self.fileentry.delete(0, END)
         self.fileentry.insert(0, file)
         self.fileentry.config(state='readonly')
-    def testButton(self):
+        self.test()
+    def test(self):
         file=self.fileentry.get()
         data=ExplanationService.overallExplanation(file)
         if(data is None):
-            messagebox.showerror('Overall Explanation failed', '(Todo information about the reasons)')
+            messagebox.showerror('Overall Explanation failed', 'Data must fit to the model and model must be loaded')
             return
         self.createTree(data)
     def OnDoubleClick(self,event):
         item = self.tree.identify('item',event.x,event.y)
         item=item[1:]
+        ind=None
         try:
-            print('index: '+str(int(item, 16)-1))
+            ind=int(item, 16)-1
         except:
             print('no item here')
+        if(ind is not None):
+            file=self.fileentry.get()
+            self.master.switch_frame(LimeWindowGui)
+            self.master._frame.setFilePath(file,ind)
     def createTree(self,data):
         self.tableframe.destroy()
         self.tableframe=Frame(self.tab2)
