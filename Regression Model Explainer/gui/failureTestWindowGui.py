@@ -72,9 +72,16 @@ class FailureTestWindowGui(Frame):
             messagebox.showerror('Failure test failed', 'Todo: Infomation about the reason')
             return
         self.showPlot(data)
+    def on_plot_hover(self,event):
+        for i in range(self.feat.__len__()):
+            self.feat[i].set_visible(False)
+        if self.line.contains(event)[0]:
+            ind = self.line.contains(event)[1]["ind"]
+            self.feat[ind[0]].set_visible(True)  
+        self.canvas.draw_idle()
     def showPlot(self,data):
-        print(data[0])
-        print(data[1])
+        #print(data[0])
+        #print(data[4].__len__())
         
         messured=data[0]
         prediction=data[1]
@@ -85,15 +92,23 @@ class FailureTestWindowGui(Frame):
          
         f = Figure(figsize=(1, 1), dpi=100)
         a = f.add_subplot(111)
-        a.scatter(messured, prediction, edgecolors=(0, 0, 0))
+        self.line=a.scatter(messured, prediction, edgecolors=(0, 0, 0))
         a.plot([messured.min(), messured.max()], [messured.min(), messured.max()], 'k--', lw=1)
         a.set_xlabel('Measured')
         a.set_ylabel('Predicted')
         
-        canvas = FigureCanvasTkAgg(f, master=self.plotframe)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side='top', fill='both', expand='yes')
+        self.feat=[]
+        for i in range (data[3].__len__()):
+            self.feat.append(a.annotate(data[3][i], (messured[i],prediction[i]),
+                                        bbox=dict(boxstyle="round", fc="w")))
+            self.feat[i].set_visible(False)
+        #canvas.mpl_connect('motion_notify_event', self.on_plot_hover) 
+        
+        self.canvas = FigureCanvasTkAgg(f, master=self.plotframe)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(side='top', fill='both', expand='yes')
 
-        toolbar = NavigationToolbar2Tk(canvas, self.plotframe)
+        toolbar = NavigationToolbar2Tk(self.canvas, self.plotframe)
         toolbar.update()
-        canvas._tkcanvas.pack(side='top', fill='both', expand='yes')
+        self.canvas.mpl_connect('motion_notify_event', self.on_plot_hover)
+        self.canvas._tkcanvas.pack(side='top', fill='both', expand='yes')

@@ -10,10 +10,16 @@ from tkinter.ttk import Treeview
 from tkinter.ttk import Scrollbar
 from tkinter.filedialog import askopenfilename
 
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+
+import numpy as np
+
 from gui.mainWindowGui import MainWindowGui
 from services.modelDataService import ModelDataService
 from services.explanationService import ExplanationService
 from gui.scrolledFrameXandY import ScrolledFrameXandY
+from tools.helper import Helper
 class ExplanationFeatureWindowGui(Frame):
     ''' Frame for Explanation Feature
     '''
@@ -88,6 +94,7 @@ class ExplanationFeatureWindowGui(Frame):
         else:
             self.createTree(result)
     def createTree(self,result):
+        '''
         self.efframe.destroy()
         self.efframe=Frame(self.eflabelframe)
         self.efframe.pack(fill='both',expand='yes')
@@ -112,3 +119,76 @@ class ExplanationFeatureWindowGui(Frame):
         for i in range(result[1].__len__()):
             tree.insert("",'end',text="",values=result[1][i])
         scrollable_body.update()
+        #print('here')
+        #print(result[1])
+        data=result[1]
+        ran=[]
+        numresult=[]
+        mesuredmins=[]
+        mesuredmax=[]
+        predictmin=[]
+        predictmax=[]
+        mesured=[]
+        predict=[]
+        
+        for i in range(data.__len__()):
+            ran.append(data[i][0])
+            numresult.append(data[i][1])
+            if(int(data[i][1])!=0):
+                temp=[]
+                temp=data[i][2].split('-')
+                mesuredmins.append(temp[0])
+                mesuredmax.append(temp[1])
+                temp=data[i][3].split('-')
+                predictmin.append(temp[0])
+                predictmax.append(temp[1])
+                mesured.append(data[i][4])
+                predict.append(data[i][5])
+            else:
+                mesuredmins.append('0')
+                mesuredmax.append('0')
+                predictmin.append('0')
+                predictmax.append('0')
+                mesured.append('0')
+                predict.append('0')
+        mesuredmins=np.array(mesuredmins).astype(float)
+        mesuredmax=np.array(mesuredmax).astype(float)
+        predictmin=np.array(predictmin).astype(float)
+        predictmax=np.array(predictmax).astype(float)
+        mesured=np.array(mesured).astype(float)
+        predict=np.array(predict).astype(float)
+        '''
+        data=Helper.tranformDataForFeatureGraph(result[1])
+        N = data[0].__len__()
+        ind = np.arange(N)  # the x locations for the groups
+        height = 0.10 
+        
+        f = Figure(figsize=(1, 1), dpi=100)
+        a2 = f.add_subplot(111)
+        r1=a2.barh(ind,data[2],height)
+        r2=a2.barh(ind+height,data[3],height)
+        r3=a2.barh(ind+height*2,data[6],height)
+        r4=a2.barh(ind+height*3,data[4],height)
+        r5=a2.barh(ind+height*4,data[5],height)
+        r6=a2.barh(ind+height*5,data[7],height)
+        
+        a2.set_yticks(ind+height)
+        labels=Helper.getFeatureExplanationLabels(data[0], data[1])
+        a2.set_yticklabels(labels)
+        a2.invert_yaxis()
+        a2.legend( (r1[0], r2[0], r3[0],r4[0],r5[0],r6[0]), ('min measured', 'max mesured', 'avarage (mean) mesured',
+                                         'min predicted','max predicted','avarage (mean) prediction') )
+        a2.set_xlabel(result[2])
+        a2.set_title('ranges from feature: '+self.featurecombo.get())
+        
+        self.efframe.destroy()
+        self.efframe=Frame(self.eflabelframe)
+        self.efframe.pack(fill='both',expand='yes')
+        
+        canvas = FigureCanvasTkAgg(f, master=self.efframe)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side='top', fill='both', expand='yes')
+
+        toolbar = NavigationToolbar2Tk(canvas, self.efframe)
+        toolbar.update()
+        canvas._tkcanvas.pack(side='top', fill='both', expand='yes')

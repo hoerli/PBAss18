@@ -16,4 +16,14 @@ class FailureTest():
             data[1]=data[1].astype(float)
         except:
             return
+        featureinfo=[]
+        for i in range(data[4].__len__()):
+            tempstring='Input features:\n'#todo onlick info later
+            for x in range(data[3].__len__()):
+                tempstring=tempstring+data[3][x]+': '+data[4][i][x]
+                if(x!=data[3].__len__()-1):
+                    tempstring=tempstring+'\n'
+            featureinfo.append(tempstring)
+        data[3]=featureinfo
+        data[4]=None
         return data

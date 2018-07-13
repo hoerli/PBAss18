@@ -171,6 +171,8 @@ class KerasNNService():
         temp.append(data[1])
         temp.append(prediction)
         temp.append(data[4])
+        temp.append(data[3])
+        temp.append(data[0])
         return temp
     def getDataForOverallExplanation(self,file):
         ''' method not for the interface between client(gui) and backend

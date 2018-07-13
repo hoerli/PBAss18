@@ -74,4 +74,5 @@ class FeatureExplanation(object):
         result=[]
         result.append(labels)
         result.append(featurexplanationdata)
+        result.append(outputfeature)
         return result

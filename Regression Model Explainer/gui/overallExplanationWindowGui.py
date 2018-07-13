@@ -21,7 +21,7 @@ class OverallExplanationWindowGui(Frame):
     '''
     def __init__(self,master):
         Frame.__init__(self, master)
-        
+        '''
         nb=Notebook(self)
         nb.pack(side='left',fill='both',expand='yes')
         
@@ -66,6 +66,42 @@ class OverallExplanationWindowGui(Frame):
         self.meanframe=Frame(self.meanlabelframe)
         self.meanframe.pack(fill='both',expand='yes')
         self.meanlabelframe.pack(fill='both',expand='yes',padx=20)
+        '''
+        labelframe=LabelFrame(self,text='Load Test Data')
+        frame=Frame(labelframe)
+        label = Label(frame, text='Testdata file: ', anchor='e')
+        self.fileentry = Entry(frame,readonlybackground='white')
+        self.fileentry.config(state='readonly')
+        button=Button(frame,text='browse',command=self.browseButton)
+        frame.pack(side='top',fill='x')
+        label.pack(side='left')
+        self.fileentry.pack(side='left',fill='x',expand='yes')
+        button.pack(side='left')
+        labelframe.pack(fill='x',padx=20)
+        
+        frame=Frame(self)
+        frame.pack(fill='both',expand='yes')
+        labelframe=LabelFrame(frame,text='Overall Explanation')
+        labelframe.pack(fill='both',expand='yes',padx=20)
+        nb=Notebook(labelframe)
+        nb.pack(side='left',fill='both',expand='yes')
+        
+        self.tab1=Frame()
+        nb.add(self.tab1,text='Graph')
+        self.graphframe=Frame(self.tab1)
+        self.graphframe.pack(fill='both',expand='yes')
+        
+        self.tab2=Frame()
+        nb.add(self.tab2,text='Table')
+        self.tableframe=Frame(self.tab2)
+        self.tableframe.pack(fill='both',expand='yes')
+        
+        labelframe=LabelFrame(self,text='Options')
+        button=Button(labelframe,text='Test',command=self.testButton)
+        button.pack(side='right')
+        button=Button(labelframe,text='Cancel',command=lambda: self.master.switch_frame(MainWindowGui))
+        button.pack(side='right')
+        labelframe.pack(fill='x',padx=20)
     def emptyRow(self,tab):
         frame=Frame(tab,padx=20)
         label = Label(frame,width=20, text='', anchor='e')
@@ -84,35 +120,43 @@ class OverallExplanationWindowGui(Frame):
             messagebox.showerror('Overall Explanation failed', '(Todo information about the reasons)')
             return
         self.createTree(data)
+    def OnDoubleClick(self,event):
+        item = self.tree.identify('item',event.x,event.y)
+        item=item[1:]
+        try:
+            print('index: '+str(int(item, 16)-1))
+        except:
+            print('no item here')
     def createTree(self,data):
-        self.treeframe.destroy()
-        self.treeframe=Frame(self.treelabelframe)
-        self.treeframe.pack(fill='both',expand='yes')
-        vsb=Scrollbar(self.treeframe,orient="vertical")
+        self.tableframe.destroy()
+        self.tableframe=Frame(self.tab2)
+        self.tableframe.pack(fill='both',expand='yes')
+        vsb=Scrollbar(self.tableframe,orient="vertical")
         vsb.pack(fill='y',side='right')
-        body = Frame(self.treeframe)
+        body = Frame(self.tableframe)
         body.pack(fill='both',expand='yes')
         scrollable_body = ScrolledFrameXandY(body)
-        tree = Treeview(scrollable_body, selectmode='browse')
-        tree.pack(expand=True,fill='both')
-        vsb.config(command=tree.yview)
+        self.tree = Treeview(scrollable_body, selectmode='browse')
+        self.tree.pack(expand=True,fill='both')
+        self.tree.bind("<Double-1>", self.OnDoubleClick)
+        vsb.config(command=self.tree.yview)
         col=[]
         for i in range(data[0].__len__()):
             col.append(str(i+1))
-        tree["columns"] = col
-        tree['show'] = 'headings'
+        self.tree["columns"] = col
+        self.tree['show'] = 'headings'
             
         for i in range(col.__len__()):
-            tree.column(col[i],anchor='c')
+            self.tree.column(col[i],anchor='c')
         for i in range(col.__len__()):
-            tree.heading(col[i],text=data[0][i])
+            self.tree.heading(col[i],text=data[0][i])
         for i in range(data[1].__len__()):
-            tree.insert("",'end',text="",values=data[1][i])
+            self.tree.insert("",'end',text="",values=data[1][i])
         scrollable_body.update()
         
-        self.boxplotframe.destroy()
-        self.boxplotframe=Frame(self.boxplotlabelframe)
-        self.boxplotframe.pack(fill='both',expand='yes')
+        self.graphframe.destroy()
+        self.graphframe=Frame(self.tab1)
+        self.graphframe.pack(fill='both',expand='yes')
         
         positiv=data[2]
         negativ=data[3]
@@ -123,41 +167,26 @@ class OverallExplanationWindowGui(Frame):
         
         f = Figure(figsize=(1, 1), dpi=100)
         f.suptitle('Difference of Messured and Predicted Values for: '+str(data[5]))
-        a = f.add_subplot(111)
-        a.boxplot(data_to_plot)
-        a.set_xticklabels(np.repeat(boxplotlabels, 1),rotation=0, fontsize=8)
         
-        canvas = FigureCanvasTkAgg(f, master=self.boxplotframe)
+        a = f.add_subplot(121)
+        a.set_title('Differences as Boxplots')
+        boxcolor=a.boxplot(data_to_plot,patch_artist=True)
+        a.set_xticklabels(np.repeat(boxplotlabels, 1),rotation=0)
+        colors = ['green', 'red','blue']
+        for patch, color in zip(boxcolor['boxes'], colors):
+            patch.set_facecolor(color)
+            
+        means=Helper.getMeans(positiv, negativ, full)
+        meanlabels = ('positive diff', 'neagtive diff', 'full diff')
+        
+        a2 = f.add_subplot(122)
+        a2.set_title('Means of the Differences')
+        a2.bar(meanlabels,means,width=0.10,color=('green','red','blue'))
+        
+        canvas = FigureCanvasTkAgg(f, master=self.graphframe)
         canvas.draw()
         canvas.get_tk_widget().pack(side='top', fill='both', expand='yes')
 
-        toolbar = NavigationToolbar2Tk(canvas, self.boxplotframe)
+        toolbar = NavigationToolbar2Tk(canvas, self.graphframe)
         toolbar.update()
         canvas._tkcanvas.pack(side='top', fill='both', expand='yes')
-        
-        self.meanframe.destroy()
-        self.meanframe=Frame(self.meanlabelframe)
-        self.meanframe.pack(fill='both',expand='yes')
-        
-        means=Helper.getMeans(positiv, negativ, full)
-        meanlabels = ('positive diff', 'neagtive diff', 'full diff')
-        print(means)
-        
-        f2 = Figure(figsize=(1, 1), dpi=100)
-        f2.suptitle('Means of the Difference of Messured and Predicted Values for: '+str(data[5]))
-        a2 = f2.add_subplot(111)
-        a2.bar(meanlabels,means)
-        
-        canvas2 = FigureCanvasTkAgg(f2, master=self.meanframe)
-        canvas2.draw()
-        canvas2.get_tk_widget().pack(side='top', fill='both', expand='yes')
-
-        toolbar2 = NavigationToolbar2Tk(canvas2, self.meanframe)
-        toolbar2.update()
-        canvas2._tkcanvas.pack(side='top', fill='both', expand='yes')
-        
-        #Todo bar for number positiv, negativ,full
-        
-        
-        
-        

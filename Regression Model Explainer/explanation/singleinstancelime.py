@@ -48,15 +48,24 @@ class SingleInstanceLime():
         categorical_features = np.argwhere(np.array([len(set(traindata[:,x])) for x in range(traindata.shape[1])]) <= 10).flatten()
         explainer = lime_tabular.LimeTabularExplainer(traindata, feature_names=features, class_names=['price'], categorical_features=categorical_features, verbose=True, mode='regression')
         exp = explainer.explain_instance(inpu, model.predict,num_features=features.__len__())
-        f=exp.as_pyplot_figure()
+        #f=exp.as_pyplot_figure()
+        f=exp.as_list()
+        temp=Helper.transformDataForLime(f)
         finaldata=[]
-        finaldata.append(f)
+        finaldata.append(temp[0])
+        finaldata.append(temp[1])
+        #f=exp.as_pyplot_figure()
+        #finaldata.append(f)
         miv=exp.min_value
         mav=exp.max_value
         v=exp.predicted_value
+        lv=exp.local_pred
         finaldata.append(miv)
         finaldata.append(mav)
         finaldata.append(v)
-        finaldata.append(features)
-        finaldata.append(inpu)
+        finaldata.append(lv)
+        finaldata.append(outputfeature)
+        temp2=Helper.sortFeaturesForLime(features, inpu, temp[0])
+        finaldata.append(temp2[0])
+        finaldata.append(temp2[1])
         return finaldata

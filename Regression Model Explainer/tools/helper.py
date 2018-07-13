@@ -247,9 +247,96 @@ class Helper(object):
                 temp.append(str(tm.mean()))
                 temp.append(str(tp.mean()))
             results.append(temp)
+        '''
         print(results)
         for i in range(finaldata.__len__()): #testing if correct
             for x in range(finaldata[i].__len__()):
                 print(finaldata[i][x])
-            print('_____________________________________________')       
+            print('_____________________________________________')
+        '''    
         return results
+    @staticmethod
+    def getFeatureExplanationLabels(ran,numresult):
+        label=[]
+        for i in range(ran.__len__()):
+            temp=ran[i].split('-')
+            temp=np.array(temp).astype(float)
+            temp[0]=temp[0].round(2)
+            temp[1]=temp[1].round(2)
+            l='Range: '+str(temp[0])+'-'+str(temp[1])+'\nTuples: '+str(numresult[i])
+            label.append(l)
+        return label
+    @staticmethod
+    def tranformDataForFeatureGraph(data):
+        data=data
+        ran=[]
+        numresult=[]
+        mesuredmins=[]
+        mesuredmax=[]
+        predictmin=[]
+        predictmax=[]
+        mesured=[]
+        predict=[]
+        
+        for i in range(data.__len__()):
+            ran.append(data[i][0])
+            numresult.append(data[i][1])
+            if(int(data[i][1])!=0):
+                temp=[]
+                temp=data[i][2].split('-')
+                mesuredmins.append(temp[0])
+                mesuredmax.append(temp[1])
+                temp=data[i][3].split('-')
+                predictmin.append(temp[0])
+                predictmax.append(temp[1])
+                mesured.append(data[i][4])
+                predict.append(data[i][5])
+            else:
+                mesuredmins.append('0')
+                mesuredmax.append('0')
+                predictmin.append('0')
+                predictmax.append('0')
+                mesured.append('0')
+                predict.append('0')
+        mesuredmins=np.array(mesuredmins).astype(float)
+        mesuredmax=np.array(mesuredmax).astype(float)
+        predictmin=np.array(predictmin).astype(float)
+        predictmax=np.array(predictmax).astype(float)
+        mesured=np.array(mesured).astype(float)
+        predict=np.array(predict).astype(float)
+        result=[]
+        result.append(ran)
+        result.append(numresult)
+        result.append(mesuredmins)
+        result.append(mesuredmax)
+        result.append(predictmin)
+        result.append(predictmax)
+        result.append(mesured)
+        result.append(predict)
+        return result
+    @staticmethod
+    def transformDataForLime(data):
+        labels=[]
+        values=[]
+        result=[]
+        for i in range(data.__len__()):
+            labels.append(data[i][0])
+            values.append(data[i][1])
+        result.append(labels)
+        result.append(values)
+        return result
+    @staticmethod
+    def sortFeaturesForLime(features,inpu,expla):
+        resultfeat=[]
+        resultinpu=[]
+        for i in range(expla.__len__()):
+            for x in range(features.__len__()):
+                if(expla[i].__contains__(features[x])):
+                    resultfeat.append(features[x])
+                    resultinpu.append(inpu[x])
+        resultfeat=np.array(resultfeat)
+        resultinpu=np.array(resultinpu)
+        result=[]
+        result.append(resultfeat)
+        result.append(resultinpu)
+        return result
