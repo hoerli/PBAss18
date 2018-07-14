@@ -53,41 +53,59 @@ class AppGui(Tk):
         self.menu = Menu(self)
         self.config(menu=self.menu)
         
-        self.main= Menu(self.menu)
-        self.menu.add_cascade(label="Main",menu=self.main)
-        self.main.add_command(label="Main Window", command=lambda: self.switch_frame(MainWindowGui))
-        self.main.add_command(label="Exit", command=exit)
-
+        self.datamenu= Menu(self.menu)
+        self.menu.add_cascade(label='Data',menu=self.datamenu)
+        self.datamenu.add_command(label='Load Model', command=self.loadModel)
+        self.datamenu.add_command(label='Save Model', command=self.modelSave)
+        
+        self.modelmenu= Menu(self.menu)
+        self.menu.add_cascade(label="Model",menu=self.modelmenu)
+        self.modelmenu.add_command(label="Explanation", command=self.explanation)
+        self.modelmenu.add_command(label="Show Model Information", command=self.showModelInformation)
+        
         self.nn = Menu(self.menu)
         self.menu.add_cascade(label="Neural Network", menu=self.nn)
-        self.nn.add_command(label="Save Model", command=self.modelSave)
-        self.nn.add_command(label="Load Model", command=self.loadModel)
         self.nn.add_command(label="Create/Train neural network", command=lambda: self.switch_frame(NnWindowGui))
-        self.nn.add_command(label='Predict TestData',command=lambda: self.switch_frame(PredictDataSetWindowGUI))
-        self.nn.add_command(label='Predict',command=lambda: self.switch_frame(PredictSingleDataWindowGui))
-        self.nn.add_command(label='Show Model Information',command=lambda: self.switch_frame(ShowModelInformationGui))
-        
-        self.expm= Menu(self.menu)
-        self.menu.add_cascade(label='Explanation', menu=self.expm)
-        self.expm.add_command(label="Failure Test",command=lambda: self.switch_frame(FailureTestWindowGui))
-        self.expm.add_command(label='Single instance Explanation(Lime)',command=lambda: self.switch_frame(LimeWindowGui))
-        self.expm.add_command(label='Overall explanation',command=lambda: self.switch_frame(OverallExplanationWindowGui))
-        self.expm.add_command(label='Explanation Feature', command=lambda: self.switch_frame(ExplanationFeatureWindowGui))
-        
-        self.nntest = Menu(self.menu)
-        self.menu.add_cascade(label='Neural Network Tests', menu=self.nntest)
-        self.nntest.add_command(label='Evaluate Neural Network with KerasRegressor(10-fold cross validation)', command=self.topologyTest)
-        self.nntest.add_command(label='Neural Network Performance test', command=self.perfomanceTest)
+        self.nn.add_command(label='Predict TestData',command=self.predictTestData)
+        self.nn.add_command(label='Predict',command=self.predictSingleData)
+        self.nn.add_command(label='Evaluate Neural Network with KerasRegressor(10-fold cross validation)', command=self.topologyTest)
+        self.nn.add_command(label='Neural Network Performance test', command=self.perfomanceTest)
     def disabelMenu(self):
-        self.menu.entryconfigure('Main', state='disabled')
-        self.menu.entryconfig('Neural Network', state='disabled')
-        self.menu.entryconfigure('Explanation', state='disabled')
-        self.menu.entryconfigure('Neural Network Tests', state='disabled')
+        self.menu.entryconfigure('Data', state='disabled')
+        self.menu.entryconfigure('Neural Network', state='disabled')
+        self.menu.entryconfigure('Model', state='disabled')
     def enableMenu(self):
-        self.menu.entryconfigure('Main', state='normal')
-        self.menu.entryconfig('Neural Network', state='normal')
-        self.menu.entryconfigure('Explanation', state='normal')
-        self.menu.entryconfigure('Neural Network Tests', state='normal')
+        self.menu.entryconfigure('Data', state='normal')
+        self.menu.entryconfigure('Neural Network', state='normal')
+        self.menu.entryconfigure('Model', state='normal')
+    def predictTestData(self):
+        mds=ModelDataService()
+        if(mds.getModel() is None):
+            messagebox.showwarning('No Model', 'Create or load model')
+            self.switch_frame(MainWindowGui)
+            return
+        self.switch_frame(PredictDataSetWindowGUI)
+    def predictSingleData(self):
+        mds=ModelDataService()
+        if(mds.getModel() is None):
+            messagebox.showwarning('No Model', 'Create or load model')
+            self.switch_frame(MainWindowGui)
+            return
+        self.switch_frame(PredictSingleDataWindowGui)
+    def explanation(self):
+        mds=ModelDataService()
+        if(mds.getModel() is None):
+            messagebox.showwarning('No Model', 'Create or load model')
+            self.switch_frame(MainWindowGui)
+            return
+        self.switch_frame(FailureTestWindowGui)
+    def showModelInformation(self):
+        mds=ModelDataService()
+        if(mds.getModel() is None):
+            messagebox.showwarning('No Model', 'Create or load model')
+            self.switch_frame(MainWindowGui)
+            return
+        self.switch_frame(ShowModelInformationGui)
     def modelSave(self):
         ''' method to save a model and its data
         '''
@@ -115,4 +133,6 @@ class AppGui(Tk):
         self.switch_frame(NnWindowGui)
     def perfomanceTest(self):
         self.perfomancetest=True
+        self.switch_frame(NnWindowGui)
+    def trainNeuralNetwork(self):
         self.switch_frame(NnWindowGui)

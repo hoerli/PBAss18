@@ -77,9 +77,9 @@ class NnWindowGui(Frame):
         
         labelframe=LabelFrame(self,text='Option')
         enter=Button(labelframe,text='Create Neural Network and Train Data',command=self.creatTrainNn)
-        enter.pack()
+        enter.pack(side="right")
         cancelbutton=Button(labelframe,text='Cancel',command=self.quitbutton)
-        cancelbutton.pack()
+        cancelbutton.pack(side="right")
         labelframe.pack(fill='x',padx=20)
         if(master.topologytest):
             enter.config(text='Evaluate Neural Network')
