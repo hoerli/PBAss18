@@ -27,7 +27,7 @@ class ShowModelInformationGui(Frame):
         self.emptyRow()
         
         labelframe=LabelFrame(self,text='Options')
-        cancel=Button(labelframe,text='Cancel',command=lambda: master.switch_frame(MainWindowGui))
+        cancel=Button(labelframe,text='OK',command=lambda: master.switch_frame(MainWindowGui))
         cancel.pack()
         labelframe.pack(fill='x',padx=20)
         

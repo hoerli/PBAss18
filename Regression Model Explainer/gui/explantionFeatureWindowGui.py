@@ -46,44 +46,40 @@ class ExplanationFeatureWindowGui(Frame):
             self.featurecombo = Combobox(frame,values=features,state="readonly")
             label.pack(side='left')
             self.featurecombo.pack(side='left',fill='x',expand='yes')
+            self.featurecombo.bind("<<ComboboxSelected>>", self.selectItem)
             frame.pack(side='top',fill='x')
             
             frame=Frame(labelframe)
-            label = Label(frame,width=20, text='Choose Steps', anchor='e')
+            label = Label(frame,width=20, text='Choose Steps\n (positive number)\nReturn to update', anchor='e')
             self.stepsentry = Entry(frame)
+            self.stepsentry.bind('<Key-Return>', self.on_changed)
             frame.pack(side='top',fill='x')
             label.pack(side='left')
             self.stepsentry.pack(side='left',fill='x',expand='yes')
-        
-            self.emptyRow()
         
         self.eflabelframe=LabelFrame(self,text='Explanation Feature')
         self.efframe=Frame(self.eflabelframe)
         self.efframe.pack(fill='both',expand='yes')
         self.eflabelframe.pack(fill='both',expand='yes',padx=20)
-        
-        self.emptyRow()
-        
-        labelframe=LabelFrame(self,text='Options')
-        self.efbutton=Button(labelframe,text='Explain Feature',command=self.explainFeatureTest)
-        self.efbutton.pack(side='right')
-        self.cancelbutton=Button(labelframe,text='Cancel',command=lambda: master.switch_frame(MainWindowGui))
-        self.cancelbutton.pack(side='right') 
-        labelframe.pack(fill='x',padx=20)
-        if(features is None):
-            self.efbutton.config(state='disabled')
-            messagebox.showerror('No Model', 'No Model created or loaded')
-    def emptyRow(self):
-        frame=Frame(self,padx=20)
-        label = Label(frame,width=20, text='', anchor='e')
-        frame.pack(side='top',fill='x')
-        label.pack(side='left')
+    def on_changed(self,event):
+        steps=self.stepsentry.get()
+        if(Helper.is_integer(steps)):
+            if(self.fileentry.get()!=''):
+                self.explainFeatureTest()
+    def selectItem(self,event):
+        self.explainFeatureTest()
     def browseButton(self):
         file=askopenfilename(filetypes=[("CSV Files",".csv")])
+        self.setFileEntrys(file)
+    def setFileEntrys(self,file):
         self.fileentry.config(state='normal')
         self.fileentry.delete(0, END)
         self.fileentry.insert(0, file)
         self.fileentry.config(state='readonly')
+        self.featurecombo.current(0)
+        self.stepsentry.delete(0, END)
+        self.stepsentry.insert(0,2)
+        self.explainFeatureTest()
     def explainFeatureTest(self):
         file=self.fileentry.get()
         feature=self.featurecombo.get()

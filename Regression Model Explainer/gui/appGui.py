@@ -96,6 +96,7 @@ class AppGui(Tk):
         issaved=mds.saveModel(file)
         if(issaved):
             messagebox.showinfo('Saved', 'Model is saved to: '+str(file)+'.model')
+            self.switch_frame(ShowModelInformationGui)
         else:
             messagebox.showerror('Not Saved', 'There is no model created or loaded to Save')
     def loadModel(self):
@@ -106,6 +107,7 @@ class AppGui(Tk):
         isloaded=mds.loadModel(file)
         if(isloaded):
             messagebox.showinfo('Loaded', 'The Model: '+file+', is loaded')
+            self.switch_frame(ShowModelInformationGui)
         else:
             messagebox.showerror('Not Loaded', 'The model is not Loaded')
     def topologyTest(self):
