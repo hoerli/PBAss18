@@ -35,6 +35,7 @@ class FailureTestWindowGui(Frame):
         self.plotframe.pack(fill='both',expand='yes')
         self.plotlabelframe.pack(fill='both',expand='yes',padx=20)
         
+        self.master.creatExplanationMenu(self,0)
     def browseButton(self):
         file=askopenfilename(filetypes=[("CSV Files",".csv")])
         self.setFileEntry(file)

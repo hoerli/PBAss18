@@ -41,6 +41,8 @@ class LimeWindowGui(Frame):
         self.limeframe=Frame(self.limelabelframe)
         self.limeframe.pack(fill='both',expand='yes')
         self.limelabelframe.pack(fill='both',expand='yes',padx=20)
+        
+        self.master.creatExplanationMenu(self,3)
     def selectItem(self,event):
         index=self.featurecombo.current()
         self.runTest(self.inputtuples[index])

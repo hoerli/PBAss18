@@ -61,6 +61,8 @@ class ExplanationFeatureWindowGui(Frame):
         self.efframe=Frame(self.eflabelframe)
         self.efframe.pack(fill='both',expand='yes')
         self.eflabelframe.pack(fill='both',expand='yes',padx=20)
+        
+        self.master.creatExplanationMenu(self,2)
     def on_changed(self,event):
         steps=self.stepsentry.get()
         if(Helper.is_integer(steps)):

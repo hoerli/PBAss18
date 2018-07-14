@@ -1,6 +1,8 @@
 from tkinter import Tk
 from tkinter import Menu
 from tkinter import messagebox
+from tkinter import LabelFrame
+from tkinter import Button
 from tkinter.filedialog import asksaveasfilename
 from tkinter.filedialog import askopenfilename
 
@@ -136,3 +138,51 @@ class AppGui(Tk):
         self.switch_frame(NnWindowGui)
     def trainNeuralNetwork(self):
         self.switch_frame(NnWindowGui)
+    def getCurrentTestDataPath(self):
+        path=''
+        try:
+            path=self._frame.fileentry.get()
+        except:
+            print('do nothing')
+        return path
+    def ftButton(self):
+        file=self.getCurrentTestDataPath()
+        self.switch_frame(FailureTestWindowGui)
+        if(file != ''):
+            self._frame.setFileEntry(file)
+    def overallButton(self):
+        file=self.getCurrentTestDataPath()
+        self.switch_frame(OverallExplanationWindowGui)
+        if(file != ''):
+            self._frame.setFileEntry(file)
+    def featurButton(self):
+        file=self.getCurrentTestDataPath()
+        self.switch_frame(ExplanationFeatureWindowGui)
+        if(file != ''):
+            self._frame.setFileEntrys(file)
+    def limeButton(self):
+        file=self.getCurrentTestDataPath()
+        self.switch_frame(LimeWindowGui)
+        if(file != ''):
+            self._frame.setFilePath(file,0)
+    def creatExplanationMenu(self,frame,dis):
+        labelframe=LabelFrame(frame,text='Change Explanation',bg='white')
+        ftbutton=Button(labelframe,text='Failure Test',bg='white',command=self.ftButton)
+        ftbutton.pack(side='left')
+        overallbutton=Button(labelframe,text='Overall Explanation',bg='white',command=self.overallButton)
+        overallbutton.pack(side='left')
+        featurebutton=Button(labelframe,text='Feature Explanation',bg='white',command=self.featurButton)
+        featurebutton.pack(side='left')
+        limebutton=Button(labelframe,text='Explanation of Single Tuple (Lime)',bg='white',command=self.limeButton)
+        limebutton.pack(side='left')
+        labelframe.pack(fill='x',padx=20)
+        cancelbutton=Button(labelframe,text='Cancel',command=lambda: self.switch_frame(MainWindowGui))
+        cancelbutton.pack(side='right')
+        if(dis==0):
+            ftbutton.config(state='disabled')
+        if(dis==1):
+            overallbutton.config(state='disabled')
+        if(dis==2):
+            featurebutton.config(state='disabled')
+        if(dis==3):
+            limebutton.config(state='disabled')

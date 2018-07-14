@@ -51,6 +51,7 @@ class OverallExplanationWindowGui(Frame):
         self.tableframe=Frame(self.tab2)
         self.tableframe.pack(fill='both',expand='yes')
         
+        self.master.creatExplanationMenu(self,1)
     def emptyRow(self,tab):
         frame=Frame(tab,padx=20)
         label = Label(frame,width=20, text='', anchor='e')
