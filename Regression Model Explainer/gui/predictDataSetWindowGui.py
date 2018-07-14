@@ -12,6 +12,7 @@ from gui.mainWindowGui import MainWindowGui
 from tkinter.filedialog import askopenfilename
 from services.KerasNNService import KerasNNService
 from gui.scrolledFrameXandY import ScrolledFrameXandY
+from gui.limeWindowGui import LimeWindowGui
 class PredictDataSetWindowGUI(Frame):
     ''' Frame for prediction with a data set
     '''
@@ -32,7 +33,7 @@ class PredictDataSetWindowGUI(Frame):
         
         self.emptyRow()
         
-        self.treelabelframe=LabelFrame(self,text='Result')
+        self.treelabelframe=LabelFrame(self,text='Prediction: Double click on tuple in Table to show explanation of the tuple (lime)')
         self.treeframe=Frame(self.treelabelframe)
         self.treeframe.pack(fill='both',expand='yes')
         self.treelabelframe.pack(fill='both',expand='yes',padx=20)
@@ -41,8 +42,6 @@ class PredictDataSetWindowGUI(Frame):
         self.emptyRow()
         
         labelframe=LabelFrame(self,text='Options')
-        button=Button(labelframe,text='Predict',command=self.predictButton)
-        button.pack(side='right')
         button=Button(labelframe,text='Cancel',command=lambda: self.master.switch_frame(MainWindowGui))
         button.pack(side='right')
         labelframe.pack(fill='x',padx=20)
@@ -57,7 +56,8 @@ class PredictDataSetWindowGUI(Frame):
         self.fileentry.delete(0, END)
         self.fileentry.insert(0, file)
         self.fileentry.config(state='readonly')
-    def predictButton(self):
+        self.predict()
+    def predict(self):
         knns=KerasNNService()
         file=self.fileentry.get()
         data=knns.predictFileforGui(file)
@@ -65,6 +65,18 @@ class PredictDataSetWindowGUI(Frame):
             messagebox.showerror('Prediction Failed', 'Prediction failed (Todo information about the reasons)')
             return
         self.createTree(data)
+    def OnDoubleClick(self,event):
+        item = self.tree.identify('item',event.x,event.y)
+        item=item[1:]
+        ind=None
+        try:
+            ind=int(item, 16)-1
+        except:
+            print('no item here')
+        if(ind is not None):
+            file=self.fileentry.get()
+            self.master.switch_frame(LimeWindowGui)
+            self.master._frame.setFilePath(file,ind)
     def createTree(self,data):
         self.treeframe.destroy()
         self.treeframe=Frame(self.treelabelframe)
@@ -74,19 +86,20 @@ class PredictDataSetWindowGUI(Frame):
         body = Frame(self.treeframe)
         body.pack(fill='both',expand='yes')
         scrollable_body = ScrolledFrameXandY(body)
-        tree = Treeview(scrollable_body, selectmode='browse')
-        tree.pack(expand=True,fill='both')
-        vsb.config(command=tree.yview)
+        self.tree = Treeview(scrollable_body, selectmode='browse')
+        self.tree.bind("<Double-1>", self.OnDoubleClick)
+        self.tree.pack(expand=True,fill='both')
+        vsb.config(command=self.tree.yview)
         col=[]
         for i in range(data[0].__len__()):
             col.append(str(i+1))
-        tree["columns"] = col
-        tree['show'] = 'headings'
+        self.tree["columns"] = col
+        self.tree['show'] = 'headings'
             
         for i in range(col.__len__()):
-            tree.column(col[i],anchor='c')
+            self.tree.column(col[i],anchor='c')
         for i in range(col.__len__()):
-            tree.heading(col[i],text=data[0][i])
+            self.tree.heading(col[i],text=data[0][i])
         for i in range(data[1].__len__()):
-            tree.insert("",'end',text="",values=data[1][i])
+            self.tree.insert("",'end',text="",values=data[1][i])
         scrollable_body.update()

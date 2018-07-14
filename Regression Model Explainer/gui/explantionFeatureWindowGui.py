@@ -6,8 +6,6 @@ from tkinter import Entry
 from tkinter import messagebox
 from tkinter import END
 from tkinter.ttk import Combobox
-from tkinter.ttk import Treeview
-from tkinter.ttk import Scrollbar
 from tkinter.filedialog import askopenfilename
 
 from matplotlib.figure import Figure
@@ -15,10 +13,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 
 import numpy as np
 
-from gui.mainWindowGui import MainWindowGui
 from services.modelDataService import ModelDataService
 from services.explanationService import ExplanationService
-from gui.scrolledFrameXandY import ScrolledFrameXandY
 from tools.helper import Helper
 class ExplanationFeatureWindowGui(Frame):
     ''' Frame for Explanation Feature
@@ -92,70 +88,6 @@ class ExplanationFeatureWindowGui(Frame):
         else:
             self.createTree(result)
     def createTree(self,result):
-        '''
-        self.efframe.destroy()
-        self.efframe=Frame(self.eflabelframe)
-        self.efframe.pack(fill='both',expand='yes')
-        vsb=Scrollbar(self.efframe,orient="vertical")
-        vsb.pack(fill='y',side='right')
-        body = Frame(self.efframe)
-        body.pack(fill='both',expand='yes')
-        scrollable_body = ScrolledFrameXandY(body)
-        tree = Treeview(scrollable_body, selectmode='browse')
-        tree.pack(expand=True,fill='both')
-        vsb.config(command=tree.yview)
-        col=[]
-        for i in range(result[0].__len__()):
-            col.append(str(i+1))
-        tree["columns"] = col
-        tree['show'] = 'headings'
-            
-        for i in range(col.__len__()):
-            tree.column(col[i],width=250,anchor='c')
-        for i in range(col.__len__()):
-            tree.heading(col[i],text=result[0][i])
-        for i in range(result[1].__len__()):
-            tree.insert("",'end',text="",values=result[1][i])
-        scrollable_body.update()
-        #print('here')
-        #print(result[1])
-        data=result[1]
-        ran=[]
-        numresult=[]
-        mesuredmins=[]
-        mesuredmax=[]
-        predictmin=[]
-        predictmax=[]
-        mesured=[]
-        predict=[]
-        
-        for i in range(data.__len__()):
-            ran.append(data[i][0])
-            numresult.append(data[i][1])
-            if(int(data[i][1])!=0):
-                temp=[]
-                temp=data[i][2].split('-')
-                mesuredmins.append(temp[0])
-                mesuredmax.append(temp[1])
-                temp=data[i][3].split('-')
-                predictmin.append(temp[0])
-                predictmax.append(temp[1])
-                mesured.append(data[i][4])
-                predict.append(data[i][5])
-            else:
-                mesuredmins.append('0')
-                mesuredmax.append('0')
-                predictmin.append('0')
-                predictmax.append('0')
-                mesured.append('0')
-                predict.append('0')
-        mesuredmins=np.array(mesuredmins).astype(float)
-        mesuredmax=np.array(mesuredmax).astype(float)
-        predictmin=np.array(predictmin).astype(float)
-        predictmax=np.array(predictmax).astype(float)
-        mesured=np.array(mesured).astype(float)
-        predict=np.array(predict).astype(float)
-        '''
         data=Helper.tranformDataForFeatureGraph(result[1])
         N = data[0].__len__()
         ind = np.arange(N)  # the x locations for the groups
