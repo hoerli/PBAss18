@@ -14,6 +14,7 @@ from services.loadCsvService import LoadCsvService
 from gui.trainNnWindowGui import TrainNnWindowGui
 from tools.helper import Helper
 from services.modelDataService import ModelDataService
+from gui.mainWindowGui import MainWindowGui
 class NnWindowGui(Frame):
     ''' Frame for the input of model data
     used by model creation
@@ -26,6 +27,13 @@ class NnWindowGui(Frame):
         
         self.entryOnlyReadList=[]
         self.hiddenLayerList=[]
+        master.disabelMenu()
+        titlelabel=Label(self,text='Create Neural Network and Model')
+        titlelabel.pack()
+        if(master.topologytest):
+            titlelabel.config(text='Evaluate Neural Network with KerasRegressor(10-fold cross validation)')
+        if(master.perfomancetest):
+            titlelabel.config(text='Perfomance Test')
         
         labelframe=LabelFrame(self,text='Load Train Data')
         frame=self.createFrameRow(labelframe,'Filepath: ',True)
@@ -70,11 +78,18 @@ class NnWindowGui(Frame):
         labelframe=LabelFrame(self,text='Option')
         enter=Button(labelframe,text='Create Neural Network and Train Data',command=self.creatTrainNn)
         enter.pack()
+        quit=Button(labelframe,text='Cancel',command=self.quitbutton)
+        quit.pack()
         labelframe.pack(fill='x',padx=20)
         if(master.topologytest):
             enter.config(text='Evaluate Neural Network')
         if(master.perfomancetest):
             enter.config(text='Start Perfomance Test')
+    def quitbutton(self):
+        self.master.topologytest=False
+        self.master.perfomancetest=False
+        self.master.enableMenu()
+        self.master.switch_frame(MainWindowGui)
     def createFrameRow(self,labelframe,text,readonly):
         frame=Frame(labelframe)
         label = Label(frame,width=20, text=text, anchor='e')
