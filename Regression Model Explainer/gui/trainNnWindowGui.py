@@ -12,11 +12,13 @@ from tkinter import Entry
 from tkinter import LabelFrame
 from tkinter import messagebox
 
-import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
 from services.modelDataService import ModelDataService
 from services.KerasNNService import KerasNNService
 from services.nnTestService import NnTestService
+from gui.mainWindowGui import MainWindowGui
 
 class TrainNnWindowGui(Frame):
     ''' Frame for training, MSE test and perfomance test
@@ -62,10 +64,10 @@ class TrainNnWindowGui(Frame):
         self.emptyRow()
         
         labelframe=LabelFrame(self,text='Options')
-        self.quitButton=Button(labelframe,text='abort',command=self.quitButton)
+        self.quitButton=Button(labelframe,text='OK',command=self.quitButton)
         self.quitButton.pack()
         labelframe.pack(fill='x',padx=20)
-        
+        self.quitButton.config(state='disabled')
         
         self.loadthread=LoadingThread(self)
         self.loadthread.daemon = True
@@ -87,12 +89,28 @@ class TrainNnWindowGui(Frame):
         frame.pack(side='top',fill='x')
         label.pack(side='left')
     def quitButton(self):
-        print('quit')
-    def showPerformanceTestResult(self):#Todo: show plot in gui
+        self.master.switch_frame(MainWindowGui)
+    def showPerformanceTestResult(self):
         if(self.perftesthistory is not None):
-            fig7, a = plt.subplots()
+            self.performencetestresultbutton.destroy()
+            f = Figure(figsize=(1, 1), dpi=100)
+            a = f.add_subplot(111)
             a.plot(self.perftesthistory.history['loss'])
-            plt.show()
+            
+            
+            f.suptitle('Perfomance test')
+            a.set_xlabel('Epochs')
+            a.set_ylabel('MSE (Mean Squared Error)')
+            canvas = FigureCanvasTkAgg(f, master=self.labelframe)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side='top', fill='both', expand='yes')
+            
+            toolbar = NavigationToolbar2Tk(canvas, self.labelframe)
+            toolbar.update()
+            canvas._tkcanvas.pack(side='top', fill='both', expand='yes')
+            #fig7, a = plt.subplots()
+            #a.plot(self.perftesthistory.history['loss'])
+            #plt.show()
         else:
             messagebox.showinfo('Show Result failed', 'Cant show Result of Performance Test')
 class LoadingThread(threading.Thread):
@@ -118,6 +136,7 @@ class LoadingThread(threading.Thread):
         if(self.performanceresult is not None):
             self.setPerfomanceResult()
         self.master.master.enableMenu()
+        self.master.quitButton.config(state='normal')
     def loadImages(self):
         images=[]
         for filename in glob.glob('loadimages/*.gif'):
