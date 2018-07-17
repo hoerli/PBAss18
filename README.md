@@ -51,3 +51,7 @@ to:<br>
 (download or clone the application)<br>
 ../miniconda3/python starter.py<br>
 or simple run starter.py (if cloned in IDE)</p>
+<br>
+<h2> Short manual for the tool:</h2>
+<a href="" target="_blank" rel="noopener">Short Manual</a>
+
