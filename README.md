@@ -53,5 +53,5 @@ to:<br>
 or simple run starter.py (if cloned in IDE)</p>
 <br>
 <h2> Short manual for the tool:</h2>
-<a href="" target="_blank" rel="noopener">Short Manual</a>
+<a href="https://github.com/hoerli/PBAss18/blob/prototype/Regression%20Model%20Explainer/short_manual.pdf" target="_blank" rel="noopener">Short Manual</a>
 
