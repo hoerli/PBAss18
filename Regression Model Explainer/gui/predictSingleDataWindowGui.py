@@ -50,8 +50,10 @@ class PredictSingleDataWindowGui(Frame):
         labelframe.pack(fill='x',padx=20)
         if(data is None):
             predictbutton.config(state='disabled')
+        '''
         if(data is not None):
             self.setDataforTesting()#only for boston data for testeing
+        '''
     def setDataforTesting(self):
         self.entrys[0].insert(0,0.08829)
         self.entrys[1].insert(0,12.5)
